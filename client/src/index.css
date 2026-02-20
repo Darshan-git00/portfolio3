@@ -7,29 +7,73 @@
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --color-background: 0 0% 2%;
-  --color-foreground: 0 0% 98%;
-  --color-card: 0 0% 4%;
-  --color-card-foreground: 0 0% 90%;
-  --color-popover: 0 0% 4%;
-  --color-popover-foreground: 0 0% 98%;
-  --color-primary: 0 0% 98%;
-  --color-primary-foreground: 0 0% 2%;
-  --color-secondary: 0 0% 12%;
-  --color-secondary-foreground: 0 0% 98%;
-  --color-muted: 0 0% 12%;
-  --color-muted-foreground: 0 0% 60%;
-  --color-accent: 0 0% 15%;
-  --color-accent-foreground: 0 0% 98%;
-  --color-destructive: 0 84.2% 60.2%;
-  --color-destructive-foreground: 0 0% 98%;
-  --color-border: 0 0% 12%;
-  --color-input: 0 0% 12%;
-  --color-ring: 0 0% 80%;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   
   --radius-lg: 0.5rem;
   --radius-md: calc(0.5rem - 2px);
   --radius-sm: calc(0.5rem - 4px);
+}
+
+:root {
+  --background: hsl(0 0% 98%);
+  --foreground: hsl(0 0% 3.9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(0 0% 3.9%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(0 0% 3.9%);
+  --primary: hsl(0 0% 9%);
+  --primary-foreground: hsl(0 0% 98%);
+  --secondary: hsl(0 0% 96.1%);
+  --secondary-foreground: hsl(0 0% 9%);
+  --muted: hsl(0 0% 96.1%);
+  --muted-foreground: hsl(0 0% 45.1%);
+  --accent: hsl(0 0% 96.1%);
+  --accent-foreground: hsl(0 0% 9%);
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(0 0% 98%);
+  --border: hsl(0 0% 89.8%);
+  --input: hsl(0 0% 89.8%);
+  --ring: hsl(0 0% 3.9%);
+}
+
+.dark {
+  --background: hsl(0 0% 2%);
+  --foreground: hsl(0 0% 98%);
+  --card: hsl(0 0% 4%);
+  --card-foreground: hsl(0 0% 90%);
+  --popover: hsl(0 0% 4%);
+  --popover-foreground: hsl(0 0% 98%);
+  --primary: hsl(0 0% 98%);
+  --primary-foreground: hsl(0 0% 2%);
+  --secondary: hsl(0 0% 12%);
+  --secondary-foreground: hsl(0 0% 98%);
+  --muted: hsl(0 0% 12%);
+  --muted-foreground: hsl(0 0% 60%);
+  --accent: hsl(0 0% 15%);
+  --accent-foreground: hsl(0 0% 98%);
+  --destructive: hsl(0 62.8% 30.6%);
+  --destructive-foreground: hsl(0 0% 98%);
+  --border: hsl(0 0% 12%);
+  --input: hsl(0 0% 12%);
+  --ring: hsl(0 0% 83.1%);
 }
 
 @layer base {
@@ -37,9 +81,9 @@
     @apply border-border;
   }
   body {
-    @apply font-sans antialiased selection:bg-white selection:text-black;
-    background-color: hsl(var(--color-background));
-    color: hsl(var(--color-foreground));
+    @apply font-sans antialiased selection:bg-foreground selection:text-background;
+    background-color: var(--background);
+    color: var(--foreground);
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -51,7 +95,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom Grain Texture */
 .grain::before {
   content: "";
   position: fixed;
@@ -65,17 +108,18 @@ html {
   z-index: 1000;
 }
 
-/* Glassmorphism */
+.dark .grain::before {
+  opacity: 0.05;
+}
+
 .glass {
-  @apply backdrop-blur-md bg-white/[0.02] border border-white/10;
+  @apply backdrop-blur-md bg-foreground/[0.02] border border-foreground/10;
 }
 
-/* Hover effects */
 .hover-glow {
-  @apply transition-all duration-500 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)];
+  @apply transition-all duration-500 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)];
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
 }
@@ -85,10 +129,22 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--color-muted-foreground) / 0.2);
-  border-radius: 10px;
+  @apply bg-muted-foreground/20 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--color-muted-foreground) / 0.4);
+  @apply bg-muted-foreground/40;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
 }
