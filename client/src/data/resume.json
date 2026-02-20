@@ -1,0 +1,74 @@
+{
+  "personal": {
+    "name": "Darshan Prabhakar",
+    "role": "Full-Stack Software Developer",
+    "email": "darshanprabhakar66@gmail.com",
+    "phone": "+91 99022 15280",
+    "linkedin": "https://linkedin.com/in/h-darshan-64722b299",
+    "github": "https://github.com/Darshan-git00",
+    "summary": "Recent engineering graduate with practical experience in Java backend development through professional apprenticeship and fellowship programs. Proficient in Spring Boot, RESTful API development, and MySQL database design. Full-stack developer with experience in React and modern web technologies."
+  },
+  "skills": [
+    "Java", "SQL", "JavaScript (ES6+)", "HTML5", "CSS3",
+    "Spring Boot", "Spring MVC", "Hibernate", "REST APIs", "React.js", "Docker", "AWS (EC2, S3)"
+  ],
+  "experience": [
+    {
+      "id": "exp-1",
+      "title": "Apprentice Software Developer",
+      "company": "Pentagon Space Pvt Ltd",
+      "location": "Bengaluru, India",
+      "date": "Jan 2025 – Aug 2025",
+      "bullets": [
+        "Developed and maintained enterprise Java web applications using Servlets, JSP, and JDBC following MVC architecture in an Agile environment.",
+        "Implemented secure backend modules for user authentication and product management, emphasizing data retrieval efficiency.",
+        "Collaborated with cross-functional teams to resolve UI defects and optimize database queries, resulting in improved page load performance.",
+        "Participated in code reviews and sprint planning sessions, contributing to iterative feature development and team knowledge sharing."
+      ]
+    },
+    {
+      "id": "exp-2",
+      "title": "Software Development Fellow",
+      "company": "Polygnan Foundation",
+      "location": "Remote",
+      "date": "Oct 2024 – Dec 2024",
+      "bullets": [
+        "Developed TalentBridge, a skill-based campus placement platform using Spring Boot, Spring MVC, and MySQL.",
+        "Designed and implemented RESTful API endpoints using Spring REST Controllers for user authentication, profile management, and skill assessment functionality.",
+        "Created a responsive web interface using JSP, Thymeleaf templates, and Bootstrap, adhering to mobile-first design principles and accessibility standards.",
+        "Leveraged Spring Data JPA and Hibernate ORM for efficient database operations and data persistence layer implementation."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-1",
+      "degree": "Bachelor of Engineering in Information Science and Engineering",
+      "school": "Vivekananda Institute of Technology, Bengaluru",
+      "date": "Dec 2021 – June 2025",
+      "details": "CGPA: 8.3/10.0"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "title": "PetHub — E-commerce Web Application",
+      "date": "2025",
+      "technologies": ["Java EE", "Spring Framework", "MySQL", "React.js"],
+      "description": "Developed a full-stack e-commerce web application for pet product inventory and order management with complete end-to-end functionality. Built a RESTful backend and a React.js frontend with secure user authentication.",
+      "link": "https://github.com/Darshan-git00",
+      "github": "https://github.com/Darshan-git00",
+      "image": "/images/project-1.png"
+    },
+    {
+      "id": "proj-2",
+      "title": "Cattle Disease Pattern Prediction System",
+      "date": "2024",
+      "technologies": ["Java", "Spring Boot", "MySQL", "REST APIs"],
+      "description": "Architected a Spring Boot application to analyze historical cattle health records using rule-based classification algorithms. Developed comprehensive RESTful APIs and implemented a data access layer using Spring Data JPA.",
+      "link": "https://github.com/Darshan-git00",
+      "github": "https://github.com/Darshan-git00",
+      "image": "/images/project-2.png"
+    }
+  ]
+}
