@@ -1,0 +1,100 @@
+You are a frontend developer working in Replit. Build a single-page portfolio site (SPA) that I can host and edit on Replit. I will attach my resume and any assets. Follow the design “vibe” and interaction patterns of [https://www.blacksmith.sh](https://www.blacksmith.sh) (typography, spacing, minimal modern feel, subtle micro‑interactions, layered sections) but do NOT copy its colors — choose a simple neutral palette I can change later. Layout and content framing should follow [https://www.justaditya.com/](https://www.justaditya.com/): the site must be a centered column/container that does NOT span the full browser width (max content width ~900–1100px), vertically centered feel with clear stacked sections and smooth scroll.
+
+Deliver a production-ready codebase on Replit with clear README and a one-click preview link.
+
+Requirements
+
+- Project type: Single Page Application (no SSR). Use React + Vite (or other SPA framework you prefer) and Tailwind CSS (or plain CSS module/scoped CSS if you prefer). Use Framer Motion or CSS transitions for subtle animations.
+- Responsive: Works on desktop, tablet, and mobile. The centered content container should remain centered and have appropriate padding on small screens.
+- Populate content from my attached resume (PDF, DOCX, or a plain-text/JSON resume). If parsing is imperfect, generate placeholders and document how to replace them.
+- Accessible: semantic HTML, keyboard navigable, color contrast adequate.
+- Lightweight and performant: small bundle, lazy-loading images.
+
+Design & Interaction Guidelines (mirror vibe of blacksmith.sh, but not colors)
+
+- Minimal, modern, slightly experimental typography (large headings with generous letter spacing, readable body type).
+- Subtle motion: fade/slide on section load, smooth hover interactions, animated link underlines, soft parallax or layered depth if suitable.
+- Use a centered content container with max-width ~1000px, horizontal margins auto, vertical spacing generous. Content should look like justaditya.com in framing and flow (hero centered left/right layout on desktop, but always within the narrower content column).
+- Avoid full-bleed hero images or elements that span the entire viewport width.
+- Clean project cards: image or screenshot, title, short description, tech tags, live/demo + source links.
+- Resume/timeline: a readable timeline or card-based layout derived from resume entries.
+
+Required Sections (in this order)
+
+1. Header (top-left logo or name, top-right compact nav anchors that smooth-scroll to sections)
+2. Hero — short headline, 1–2 sentence summary, CTA button to “View Resume” (scroll or open modal), link to contact
+3. About — 2–4 paragraph summary, key skills as chips/badges
+4. Resume / Experience — timeline or cards derived from resume (roles, company, dates, bullets)
+5. Projects — 4–6 projects (populate from resume or placeholder entries), each with screenshot, description, tech, links
+6. Contact — simple contact form (email only, no backend required — use mailto:) and social links
+7. Footer — copyright and small nav
+
+Functional & UX details
+
+- Smooth scroll behavior for nav anchors.
+- Section entry animations (fade + slight upward motion).
+- Interactive project hover states and keyboard focus styles.
+- Mobile nav: collapsible hamburger anchored to the top-right.
+- Provide a theme/config file (e.g., tailwind.config.js / variables.css) so I can change colors and fonts easily.
+- Include a simple build/deploy script and Replit run command in README.
+
+Resume parsing instructions
+
+- Accept attached resume (PDF, DOCX, TXT or JSON). Attempt automated parse: extract name, title, contact, summary, skills, work experience (title, company, start/end, bullets), education, projects.
+- If the parser fails or fields are missing, fall back to embedding the raw resume content (link to download) and include placeholders in sections with a documented TODO list for manual edits.
+- Document where to edit content (single data file like src/data/resume.json or src/data/content.js).
+
+Tech stack recommendation (you may change, but explain why)
+
+- React + Vite
+- Tailwind CSS for fast theming and precise spacing
+- Framer Motion for animations
+- React Icons or SVGs for icons
+- Optional: TypeScript (preferable) — if you choose TS, ensure strict false or provide quick type stubs
+
+File / Component structure (recommended)
+
+- src/
+  - App.jsx (or .tsx)
+  - main.jsx
+  - data/
+    - resume.json (auto-populated from attached resume)
+  - components/
+    - Header.jsx
+    - Hero.jsx
+    - About.jsx
+    - ResumeTimeline.jsx
+    - Projects.jsx
+    - ProjectCard.jsx
+    - Contact.jsx
+    - Footer.jsx
+  - styles/
+    - globals.css (or tailwind config)
+  - assets/ (images, resume file)
+
+Deliverables
+
+- Complete codebase on Replit with working preview URL.
+- README with:
+  - Setup & run steps
+  - Where to replace content (resume.json)
+  - How to change colors, fonts, and layout width
+  - Accessibility & performance notes
+- A short demonstration checklist (manual QA steps I can run) and a list of any known issues.
+
+Acceptance criteria (what I will test)
+
+- Site opens on Replit preview and is a single-page app, with smooth scrolling navigation.
+- Content is presented in a centered container with max width ~900–1100px on desktop (not full-bleed).
+- Visual vibe (spacing, type, subtle motion) matches blacksmith.sh without copying colors.
+- Resume section populated from attached resume or clearly documented fallback.
+- Projects, contact, and footer present and functional.
+- README explains how to edit content and theme.
+
+Please start by:
+
+1. Confirming you accept React + Vite + Tailwind + Framer Motion (or propose alternatives).
+2. Asking me to upload the resume (PDF/DOCX/TXT/JSON) and any screenshots or logos I want included.
+3. Producing an estimated timeline and one Replit link to the starter template where I can preview progress.
+
+Make sure code is modular, easy to edit, and well documented. Provide the initial commit on Replit and a live preview link once the first working version (hero, header, centered layout, and about section) is ready.
