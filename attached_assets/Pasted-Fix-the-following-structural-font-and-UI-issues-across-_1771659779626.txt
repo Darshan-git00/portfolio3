@@ -1,0 +1,22 @@
+Fix the following structural, font, and UI issues across the portfolio. Do NOT change any colors, do not remove any sections, keep all existing content and animations intact.
+1. Fix About section layout gap
+In client/src/components/sections/About.tsx, the bio text has an awkward gap on the left side. Remove the md:grid-cols-12 two-column layout for the bio. Instead make it a single full-width column — the summary paragraph should span the full container width with no left column gap. Keep "The Profile" as a small label above the paragraph.
+2. Fix global structural inconsistency
+In client/src/pages/Home.tsx, change max-w-[900px] to max-w-[780px] and ensure px-6 padding is consistent. Every section should feel like it belongs to the same grid — same left edge, same right edge, no section bleeding wider than others.
+3. Increase navbar size
+In client/src/components/sections/Header.tsx, increase the dock navbar size — change icon buttons from p-2 to p-3, increase icon size from h-4 w-4 to h-5 w-5, and increase the overall padding of the container from p-1.5 to p-2.5.
+4. Add Cal.com calendar booking button to navbar
+In client/src/components/sections/Header.tsx, replace the existing non-functional Calendar button with a working link:
+tsx
+  href="https://cal.com/darshan-prabhakar/15min"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="p-3 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground"
+  aria-label="Book a call"
+>
+  <Calendar className="h-5 w-5" />
+</a>
+5. Fix fonts on Experience and Projects headings
+In client/src/components/sections/Experience.tsx, add font-sans class to the job title h3 — "Apprentice Software Developer" and "Software Development Fellow" should use General Sans not mono. Same in client/src/components/sections/Projects.tsx — add font-sans to the project title h3 for "PetHub" and "Cattle Disease Pattern Prediction System".
+6. Remove project images
+In client/src/components/sections/Projects.tsx, remove the entire image block — the md:col-span-7 div that contains the <img> tag for each project. Make the project text content md:col-span-12 full width instead of md:col-span-5.

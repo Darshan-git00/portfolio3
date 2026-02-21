@@ -2,8 +2,6 @@ import { motion } from "framer-motion";
 import resumeData from "@/data/resume.json";
 
 export default function About() {
-  const scrollSkills = [...resumeData.skills, ...resumeData.skills, ...resumeData.skills];
-
   return (
     <section id="about" className="scroll-m-24 space-y-24">
       {/* Bio Section */}
@@ -12,47 +10,72 @@ export default function About() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1 }}
-        className="grid grid-cols-1 md:grid-cols-12 gap-12"
+        className="space-y-8"
       >
-        <div className="md:col-span-4">
-          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-4 mb-8">
+        <div>
+          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-4 mb-8 inline-block">
             The Profile
           </h2>
-          <div className="flex flex-wrap gap-2">
-            {resumeData.skills.slice(0, 8).map((skill, i) => (
-              <span 
-                key={skill} 
-                className="text-[10px] font-mono uppercase tracking-widest px-2 py-1 border border-border text-muted-foreground"
-                data-testid={`badge-skill-static-${i}`}
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
         </div>
         
-        <div className="md:col-span-8">
-          <div className="space-y-6 text-xl md:text-2xl text-muted-foreground leading-relaxed" data-testid="text-about-summary">
-            <p className="first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-foreground">
-              {resumeData.personal.summary}
-            </p>
-          </div>
+        <div className="space-y-6 text-xl md:text-2xl text-muted-foreground leading-relaxed" data-testid="text-about-summary">
+          <p className="first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-foreground">
+            {resumeData.personal.summary}
+          </p>
         </div>
       </motion.div>
 
-      {/* Marquee Skills Section */}
-      <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden border-y border-border py-8 bg-muted/30">
-        <div className="flex animate-scroll whitespace-nowrap">
-          {scrollSkills.map((skill, i) => (
-            <div 
-              key={`${skill}-${i}`}
-              className="mx-12 text-4xl md:text-6xl font-medium tracking-tighter text-foreground/20 hover:text-foreground transition-colors cursor-default"
+      {/* Skills Grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="flex flex-col items-center gap-4"
+      >
+        <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          Technologies
+        </h2>
+        <div className="flex flex-wrap justify-center gap-6 max-w-[560px] mx-auto">
+          {[
+            { name: "Java", slug: "java " },
+            { name: "SQL", slug: "mysql" },
+            { name: "JavaScript", slug: "javascript" },
+            { name: "HTML5", slug: "html5" },
+            { name: "CSS3", slug: "css" },
+            { name: "Spring Boot", slug: "springboot" },
+            { name: "Spring MVC", slug: "spring" },
+            { name: "Hibernate", slug: "hibernate" },
+            { name: "REST APIs", slug: "fastapi" },
+            { name: "React.js", slug: "react" },
+            { name: "Docker", slug: "docker" },
+            { name: "AWS", slug: "amazonaws" },
+          ].map((skill, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="flex flex-col items-center gap-2 group"
             >
-              {skill}
-            </div>
+              <div className="w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-muted/40 group-hover:bg-muted group-hover:scale-110 transition-all duration-200">
+                <img
+                  src={`https://cdn.simpleicons.org/${skill.slug}`}
+                  alt={skill.name}
+                  className="w-6 h-6"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+              </div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                {skill.name}
+              </span>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

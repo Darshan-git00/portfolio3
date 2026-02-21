@@ -31,22 +31,12 @@ export default function Projects() {
               className="group grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
               data-testid={`card-project-${index}`}
             >
-              <div className="md:col-span-7 aspect-[16/10] overflow-hidden rounded-sm bg-accent/50 relative">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
-                  data-testid={`img-project-${index}`}
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500" />
-              </div>
-
-              <div className="md:col-span-5 space-y-6">
+              <div className="md:col-span-12 space-y-6">
                 <div className="space-y-2">
                   <span className="text-xs font-mono text-muted-foreground">
                     {project.date}
                   </span>
-                  <h3 className="text-3xl font-medium tracking-tight">
+                  <h3 className="text-3xl font-medium tracking-tight font-sans">
                     {project.title}
                   </h3>
                 </div>
@@ -77,7 +67,7 @@ export default function Projects() {
                     className="inline-flex items-center gap-2 text-sm font-medium hover:text-muted-foreground transition-colors"
                     data-testid={`link-project-github-${index}`}
                   >
-                    <Github className="h-4 w-4" /> Source
+                    <Github className="h-5 w-5" /> Source
                   </a>
                   <a
                     href={project.link}
@@ -86,7 +76,7 @@ export default function Projects() {
                     className="inline-flex items-center gap-2 text-sm font-medium hover:text-muted-foreground transition-colors"
                     data-testid={`link-project-demo-${index}`}
                   >
-                    <ExternalLink className="h-4 w-4" /> Live
+                    <ExternalLink className="h-5 w-5" /> Live
                   </a>
                 </div>
               </div>

@@ -12,25 +12,29 @@ export default function Hero() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="inline-block font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
-            Available for opportunities
+            Seeking Opportunities
           </span>
-          <h1 className="text-5xl md:text-8xl font-medium tracking-tight leading-[0.9] font-heading" data-testid="text-hero-title">
-            <span className="font-sans">Darshan</span> <br />
-            <span className="text-muted-foreground italic font-sans">Prabhakar.</span>
+          <h1
+            className="text-5xl md:text-8xl font-medium tracking-tight leading-[0.9]"
+            data-testid="text-hero-title"
+          >
+            {resumeData.personal.name.split(" ")[0]} <br />
+            <span className="text-muted-foreground italic">Prabhakar.</span>
           </h1>
         </motion.div>
 
-        <motion.p 
+        <motion.p
           className="text-xl md:text-2xl text-muted-foreground max-w-xl leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           data-testid="text-hero-subtitle"
         >
-          A software engineer crafting high-performance digital systems and refined user interfaces.
+          Building systems that sprint like a winger down the touchline, and
+          interfaces as effortless as a feather-light smash.
         </motion.p>
-        
-        <motion.div 
+
+        <motion.div
           className="flex flex-wrap gap-6 pt-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

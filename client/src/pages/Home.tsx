@@ -25,7 +25,7 @@ export default function Home() {
       
       <Header />
       
-      <main className="max-w-[900px] mx-auto px-6 py-24 space-y-40">
+      <main className="max-w-[780px] mx-auto px-6 py-24 space-y-40">
         <Hero />
         <About />
         <Experience />
