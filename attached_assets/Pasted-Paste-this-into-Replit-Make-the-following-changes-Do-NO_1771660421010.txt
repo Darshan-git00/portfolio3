@@ -1,0 +1,67 @@
+Paste this into Replit:
+
+Make the following changes. Do NOT break any existing functionality, keep all colors and content intact.
+1. Fix Cal.com link
+In client/src/components/sections/Header.tsx, update the calendar booking link to:
+https://cal.com/darshandev/15min
+2. Replace QR code icon with Medium link
+In client/src/components/sections/Header.tsx, replace the non-functional QrCode button with a working Medium link. Remove the QrCode import from lucide-react. Add this instead:
+tsx
+  href="https://medium.com/me/stories?tab=posts-published"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="p-3 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground"
+  aria-label="Medium"
+>
+  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+    <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>
+  </svg>
+</a>
+3. Smooth dark/light mode transition
+In client/src/index.css, add this at the top of the file after the imports:
+css* {
+  transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+Also in client/src/App.tsx or wherever the theme provider wraps the app, ensure no suppressHydrationWarning is blocking transitions.
+4. Add creativity with modern design touches — keep existing design intact, only enhance
+In client/src/components/sections/Hero.tsx:
+
+Wrap the name h1 with a subtle animated gradient shimmer on hover using a CSS class shimmer-text
+Add a soft floating animation to the two CTA links using framer-motion y: [0, -4, 0] with repeat: Infinity and duration 3s
+
+In client/src/components/sections/About.tsx:
+
+Add a thin animated left border accent to the summary paragraph — a vertical line that grows from 0 to 100% height on scroll using framer motion scaleY
+
+In client/src/components/sections/Experience.tsx:
+
+The animated white line on the left border on hover is already there — enhance it by also adding a faint glow box-shadow: 0 0 8px rgba(255,255,255,0.15) on the line element when hovered
+
+In client/src/components/sections/Projects.tsx:
+
+Add a large faint project index number (01, 02) in the background of each project card — positioned absolute, very large font size text-[8rem], opacity-[0.03], font-heading, select-none, pointer-events-none — creates depth without distraction
+
+In client/src/components/sections/Contact.tsx:
+
+Add a subtle animated border gradient around the contact card that slowly rotates using a CSS @keyframes — keep it very faint, opacity-10
+
+In client/src/index.css, add these new utility classes:
+css/* ── Shimmer text effect ── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text:hover {
+  background: linear-gradient(90deg, var(--foreground) 25%, var(--muted-foreground) 50%, var(--foreground) 75%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 2s linear infinite;
+}
+
+/* ── Rotating border gradient ── */
+@keyframes rotateBorder {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

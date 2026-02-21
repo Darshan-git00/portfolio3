@@ -30,7 +30,7 @@ export default function Experience() {
               className="relative pl-8 border-l border-white/5 group"
               data-testid={`card-experience-${index}`}
             >
-              <div className="absolute left-[-1px] top-0 w-[1px] h-0 bg-white group-hover:h-full transition-all duration-700 ease-out" />
+              <div className="absolute left-[-1px] top-0 w-[1px] h-0 bg-white group-hover:h-full group-hover:shadow-[0_0_8px_rgba(255,255,255,0.15)] transition-all duration-700 ease-out" />
 
               <div className="space-y-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">

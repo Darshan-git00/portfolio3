@@ -28,10 +28,15 @@ export default function Projects() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="group grid grid-cols-1 md:grid-cols-12 gap-8 items-center"
+              className="group grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative"
               data-testid={`card-project-${index}`}
             >
-              <div className="md:col-span-12 space-y-6">
+              {/* Background Index Number */}
+              <div className="absolute -top-12 -left-8 text-[8rem] font-heading font-bold opacity-[0.03] select-none pointer-events-none">
+                0{index + 1}
+              </div>
+
+              <div className="md:col-span-12 space-y-6 relative z-10">
                 <div className="space-y-2">
                   <span className="text-xs font-mono text-muted-foreground">
                     {project.date}

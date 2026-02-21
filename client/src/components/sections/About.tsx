@@ -1,16 +1,25 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import resumeData from "@/data/resume.json";
+import { useRef } from "react";
 
 export default function About() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const scaleY = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+
   return (
-    <section id="about" className="scroll-m-24 space-y-24">
+    <section id="about" className="scroll-m-24 space-y-24" ref={containerRef}>
       {/* Bio Section */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1 }}
-        className="space-y-8"
+        className="space-y-8 relative"
       >
         <div>
           <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-4 mb-8 inline-block">
@@ -18,10 +27,16 @@ export default function About() {
           </h2>
         </div>
         
-        <div className="space-y-6 text-xl md:text-2xl text-muted-foreground leading-relaxed" data-testid="text-about-summary">
-          <p className="first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-foreground">
-            {resumeData.personal.summary}
-          </p>
+        <div className="relative pl-8">
+          <motion.div 
+            style={{ scaleY, originY: 0 }}
+            className="absolute left-0 top-0 w-[1px] h-full bg-foreground/20"
+          />
+          <div className="space-y-6 text-xl md:text-2xl text-muted-foreground leading-relaxed" data-testid="text-about-summary">
+            <p className="first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-foreground">
+              {resumeData.personal.summary}
+            </p>
+          </div>
         </div>
       </motion.div>
 
