@@ -13,12 +13,19 @@ export default function Contact() {
       >
         <div className="border border-border rounded-2xl p-8 md:p-12 text-center md:text-left md:flex items-center justify-between gap-8 bg-card">
           <div className="mb-8 md:mb-0">
-            <h2 className="text-2xl font-bold mb-4 tracking-tight text-foreground">Get in Touch</h2>
-            <p className="text-muted-foreground max-w-xl" data-testid="text-contact-desc">
-              I'm currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+            <h2 className="text-2xl font-bold mb-4 tracking-tight text-foreground">
+              Get in Touch
+            </h2>
+            <p
+              className="text-muted-foreground max-w-xl"
+              data-testid="text-contact-desc"
+            >
+              I'm currently looking for new opportunities. Whether you have
+              wanna catchup or just want to say hi, I'll try my best to get back
+              to you!
             </p>
           </div>
-          
+
           <div className="flex flex-wrap items-center justify-center gap-4 shrink-0">
             <a
               href={`mailto:${resumeData.personal.email}`}

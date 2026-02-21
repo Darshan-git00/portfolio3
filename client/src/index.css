@@ -5,6 +5,7 @@
 
 @theme inline {
   --font-sans: 'Inter', sans-serif;
+  --font-heading: 'Space Grotesk', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   --color-background: var(--background);
@@ -81,13 +82,13 @@
     @apply border-border;
   }
   body {
-    @apply font-sans antialiased selection:bg-foreground selection:text-background;
+    @apply font-mono antialiased selection:bg-foreground selection:text-background;
     background-color: var(--background);
     color: var(--foreground);
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply tracking-tighter font-medium;
+    @apply font-heading tracking-tighter font-medium;
   }
 }
 
@@ -114,10 +115,6 @@ html {
 
 .glass {
   @apply backdrop-blur-md bg-foreground/[0.02] border border-foreground/10;
-}
-
-.hover-glow {
-  @apply transition-all duration-500 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)];
 }
 
 ::-webkit-scrollbar {

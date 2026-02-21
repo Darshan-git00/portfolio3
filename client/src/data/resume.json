@@ -1,7 +1,7 @@
 {
   "personal": {
     "name": "Darshan Prabhakar",
-    "role": "Full-Stack Software Developer",
+    "role": "Software Developer",
     "email": "darshanprabhakar66@gmail.com",
     "phone": "+91 99022 15280",
     "linkedin": "https://linkedin.com/in/h-darshan-64722b299",
@@ -9,8 +9,18 @@
     "summary": "Recent engineering graduate with practical experience in Java backend development through professional apprenticeship and fellowship programs. Proficient in Spring Boot, RESTful API development, and MySQL database design. Full-stack developer with experience in React and modern web technologies."
   },
   "skills": [
-    "Java", "SQL", "JavaScript (ES6+)", "HTML5", "CSS3",
-    "Spring Boot", "Spring MVC", "Hibernate", "REST APIs", "React.js", "Docker", "AWS (EC2, S3)"
+    "Java",
+    "SQL",
+    "JavaScript (ES6+)",
+    "HTML5",
+    "CSS3",
+    "Spring Boot",
+    "Spring MVC",
+    "Hibernate",
+    "REST APIs",
+    "React.js",
+    "Docker",
+    "AWS (EC2, S3)"
   ],
   "experience": [
     {

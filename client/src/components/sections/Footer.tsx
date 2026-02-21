@@ -7,9 +7,7 @@ export default function Footer() {
         <p data-testid="text-footer-copyright">
           &copy; {new Date().getFullYear()} {resumeData.personal.name}.
         </p>
-        <p>
-          Built with React & Tailwind.
-        </p>
+        <p></p>
       </div>
     </footer>
   );

@@ -14,9 +14,9 @@ export default function Hero() {
           <span className="inline-block font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
             Available for opportunities
           </span>
-          <h1 className="text-5xl md:text-8xl font-medium tracking-tight leading-[0.9]" data-testid="text-hero-title">
-            {resumeData.personal.name.split(' ')[0]} <br />
-            <span className="text-muted-foreground italic">Prabhakar.</span>
+          <h1 className="text-5xl md:text-8xl font-medium tracking-tight leading-[0.9] font-heading" data-testid="text-hero-title">
+            <span className="font-sans">Darshan</span> <br />
+            <span className="text-muted-foreground italic font-sans">Prabhakar.</span>
           </h1>
         </motion.div>
 
