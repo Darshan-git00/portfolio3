@@ -6,8 +6,11 @@ import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { useState } from "react";
+import BasketballGame from "@/components/sections/BasketballGame";
 
 export default function Home() {
+  const [showGame, setShowGame] = useState(false);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -23,17 +26,21 @@ export default function Home() {
         style={{ scaleX }}
       />
       
-      <Header />
+      <Header onGameToggle={() => setShowGame(g => !g)} gameOpen={showGame} />
       
-      <main className="max-w-[780px] mx-auto px-6 py-24 space-y-40">
-        <Hero />
-        <About />
-        <Experience />
-        <Projects />
-        <Contact />
-      </main>
+      {showGame ? (
+        <BasketballGame />
+      ) : (
+        <main className="max-w-[780px] mx-auto px-6 py-24 space-y-40">
+          <Hero />
+          <About />
+          <Experience />
+          <Projects />
+          <Contact />
+        </main>
+      )}
       
-      <Footer />
+      {!showGame && <Footer />}
       
       {/* Background radial glow */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 pointer-events-none opacity-20 overflow-hidden">

@@ -5,10 +5,10 @@ import { Moon, Sun, Github, Linkedin, X, Mail, User, Calendar } from "lucide-rea
 import resumeData from "@/data/resume.json";
 import PenaltyGame from "./PenaltyGame";
 
-export default function Header() {
+export default function Header({ onGameToggle, gameOpen }: { onGameToggle: () => void, gameOpen: boolean }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [gameOpen, setGameOpen] = useState(false);
+  const [gameOpenInternal, setGameOpenInternal] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -19,14 +19,11 @@ export default function Header() {
       <div className="pointer-events-auto flex items-center gap-1 p-2.5 rounded-full bg-background/80 backdrop-blur-2xl border border-border shadow-2xl">
         {/* Profile/About Toggle -> Now opens Penalty Game */}
         <button
-          onClick={() => setGameOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-          data-testid="button-game-toggle"
+          onClick={onGameToggle}
+          className={`p-3 rounded-full transition-colors ${gameOpen ? "bg-foreground text-background" : "hover:bg-muted text-muted-foreground hover:text-foreground"}`}
+          aria-label="Toggle game"
         >
-           <User className="h-5 w-5" />
-           <div className="w-9 h-5 bg-muted-foreground/20 rounded-full relative">
-             <div className="absolute right-0 top-0 w-5 h-5 bg-foreground rounded-full" />
-           </div>
+          <User className="h-5 w-5" />
         </button>
 
         <div className="w-[1px] h-5 bg-border mx-2" />
