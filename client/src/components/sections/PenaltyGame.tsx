@@ -18,6 +18,14 @@ export default function PenaltyGame({ onClose }: { onClose: () => void }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [kicks, setKicks] = useState(0);
 
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [onClose]);
+
   function shoot(direction: Direction) {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -56,12 +64,14 @@ export default function PenaltyGame({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      onClick={onClose}
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md"
     >
       <motion.div
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
+        onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-lg mx-4 bg-background border border-border rounded-2xl overflow-hidden shadow-2xl"
       >
         {/* Header */}
@@ -78,7 +88,7 @@ export default function PenaltyGame({ onClose }: { onClose: () => void }) {
             <button onClick={reset} className="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground">
               <RotateCcw className="h-4 w-4" />
             </button>
-            <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground">
+            <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground hover:text-foreground relative z-10">
               <X className="h-4 w-4" />
             </button>
           </div>

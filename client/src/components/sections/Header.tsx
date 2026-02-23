@@ -98,7 +98,7 @@ export default function Header() {
         )}
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {gameOpen && <PenaltyGame onClose={() => setGameOpen(false)} />}
       </AnimatePresence>
     </header>
