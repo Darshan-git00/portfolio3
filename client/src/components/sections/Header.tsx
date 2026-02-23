@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Github, Linkedin, X, Mail, User, Calendar } from "lucide-react";
 import resumeData from "@/data/resume.json";
+import PenaltyGame from "./PenaltyGame";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [gameOpen, setGameOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -15,13 +17,17 @@ export default function Header() {
   return (
     <header className="fixed bottom-8 left-0 right-0 z-50 pointer-events-none flex justify-center px-6">
       <div className="pointer-events-auto flex items-center gap-1 p-2.5 rounded-full bg-background/80 backdrop-blur-2xl border border-border shadow-2xl">
-        {/* Profile/About Toggle */}
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50">
-           <User className="h-5 w-5 text-foreground" />
+        {/* Profile/About Toggle -> Now opens Penalty Game */}
+        <button
+          onClick={() => setGameOpen(true)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+          data-testid="button-game-toggle"
+        >
+           <User className="h-5 w-5" />
            <div className="w-9 h-5 bg-muted-foreground/20 rounded-full relative">
              <div className="absolute right-0 top-0 w-5 h-5 bg-foreground rounded-full" />
            </div>
-        </div>
+        </button>
 
         <div className="w-[1px] h-5 bg-border mx-2" />
 
@@ -91,6 +97,10 @@ export default function Header() {
           </button>
         )}
       </div>
+
+      <AnimatePresence>
+        {gameOpen && <PenaltyGame onClose={() => setGameOpen(false)} />}
+      </AnimatePresence>
     </header>
   );
 }

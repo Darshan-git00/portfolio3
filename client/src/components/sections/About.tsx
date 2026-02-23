@@ -6,7 +6,7 @@ export default function About() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const scaleY = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
@@ -22,18 +22,21 @@ export default function About() {
         className="space-y-8 relative"
       >
         <div>
-          <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-4 mb-8 inline-block">
-            The Profile
+          <h2 className="text-sm font-serif uppercase tracking-[0.2em] text-muted-foreground border-b border-border pb-4 mb-8 inline-block">
+            Profile
           </h2>
         </div>
-        
+
         <div className="relative pl-8">
-          <motion.div 
+          <motion.div
             style={{ scaleY, originY: 0 }}
             className="absolute left-0 top-0 w-[1px] h-full bg-foreground/20"
           />
-          <div className="space-y-6 text-xl md:text-2xl text-muted-foreground leading-relaxed" data-testid="text-about-summary">
-            <p className="first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-foreground">
+          <div
+            className="space-y-6 text-base md:text-lg text-muted-foreground leading-relaxed max-w-2x"
+            data-testid="text-about-summary"
+          >
+            <p className="first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-foreground text-justify">
               {resumeData.personal.summary}
             </p>
           </div>
@@ -53,18 +56,51 @@ export default function About() {
         </h2>
         <div className="flex flex-wrap justify-center gap-6 max-w-[560px] mx-auto">
           {[
-            { name: "Java", slug: "java " },
-            { name: "SQL", slug: "mysql" },
-            { name: "JavaScript", slug: "javascript" },
-            { name: "HTML5", slug: "html5" },
-            { name: "CSS3", slug: "css" },
+            {
+              name: "Java",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+            },
+            {
+              name: "SQL",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+            },
+            {
+              name: "JavaScript",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+            },
+            {
+              name: "HTML5",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+            },
+            {
+              name: "CSS3",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+            },
             { name: "Spring Boot", slug: "springboot" },
-            { name: "Spring MVC", slug: "spring" },
-            { name: "Hibernate", slug: "hibernate" },
-            { name: "REST APIs", slug: "fastapi" },
-            { name: "React.js", slug: "react" },
-            { name: "Docker", slug: "docker" },
-            { name: "AWS", slug: "amazonaws" },
+            {
+              name: "Spring MVC",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg",
+            },
+            {
+              name: "Hibernate",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/hibernate/hibernate-plain.svg",
+            },
+            {
+              name: "REST APIs",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg",
+            },
+            {
+              name: "React.js",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+            },
+            {
+              name: "Docker",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+            },
+            {
+              name: "AWS",
+              icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+            },
           ].map((skill, i) => (
             <motion.div
               key={i}
@@ -76,7 +112,9 @@ export default function About() {
             >
               <div className="w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-muted/40 group-hover:bg-muted group-hover:scale-110 transition-all duration-200">
                 <img
-                  src={`https://cdn.simpleicons.org/${skill.slug}`}
+                  src={
+                    skill.icon ?? `https://cdn.simpleicons.org/${skill.slug}`
+                  }
                   alt={skill.name}
                   className="w-6 h-6"
                   onError={(e) => {
@@ -84,7 +122,7 @@ export default function About() {
                   }}
                 />
               </div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+              <span className="text-[10px] font-serif uppercase tracking-widest text-muted-foreground">
                 {skill.name}
               </span>
             </motion.div>

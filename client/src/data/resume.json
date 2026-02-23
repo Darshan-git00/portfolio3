@@ -6,7 +6,7 @@
     "phone": "+91 99022 15280",
     "linkedin": "https://linkedin.com/in/h-darshan-64722b299",
     "github": "https://github.com/Darshan-git00",
-    "summary": "I am a recent engineering graduate with practical experience in Java backend development through apprenticeship and fellowship programs. Skilled in Spring Boot, RESTful APIs, and MySQL database design, I also bring versatility as a full-stack developer with React and modern web technologies. I enjoy creating solutions that are both functional and meaningful, driven by curiosity and a passion for continuous learning."
+    "summary": "I’m a recent engineering graduate who’s already had a taste of the real world through Java backend apprenticeships and fellowships. Skilled in Spring Boot, RESTful APIs, and MySQL, but versatile enough to jump into React when needed. I love creating solutions that aren’t just functional they’re fun, useful, and a little bit clever. Curiosity keeps me learning, and cheekiness keeps me sane."
   },
   "skills": [
     "Java",
@@ -62,22 +62,39 @@
   "projects": [
     {
       "id": "proj-1",
-      "title": "PetHub — E-commerce Web Application",
+      "title": "TalentBridge Campus Recruitment Platform",
+      "date": "2025",
+      "technologies": [
+        "Java",
+        "Spring Boot",
+        "React",
+        "MySQL",
+        "REST APIs",
+        "Spring Data JPA"
+      ],
+      "description": "Designed and developed a full stack Spring Boot based campus recruitment platform connecting Students, Colleges, and Recruiters. Implemented secure role based authentication with verified college ID registration and recruiter onboarding. Built intelligent filtering to shortlist candidates using skills, academics, and integrated LinkedIn, LeetCode, and HackerRank data. Developed scalable REST APIs and dashboards using Spring Data JPA to streamline campus hiring workflows.",
+      "link": "https://github.com/Darshan-git00",
+      "github": "https://github.com/Darshan-git00/TalentBridge-diploy",
+      "image": "/images/project-3.png"
+    },
+    {
+      "id": "proj-2",
+      "title": "PetHub E-commerce Web Application",
       "date": "2025",
       "technologies": ["Java EE", "Spring Framework", "MySQL", "React.js"],
       "description": "Developed a full-stack e-commerce web application for pet product inventory and order management with complete end-to-end functionality. Built a RESTful backend and a React.js frontend with secure user authentication.",
       "link": "https://github.com/Darshan-git00",
-      "github": "https://github.com/Darshan-git00",
+      "github": "https://github.com/Darshan-git00/PetHub",
       "image": "/images/project-1.png"
     },
     {
-      "id": "proj-2",
+      "id": "proj-3",
       "title": "Cattle Disease Pattern Prediction System",
       "date": "2024",
       "technologies": ["Java", "Spring Boot", "MySQL", "REST APIs"],
       "description": "Architected a Spring Boot application to analyze historical cattle health records using rule-based classification algorithms. Developed comprehensive RESTful APIs and implemented a data access layer using Spring Data JPA.",
       "link": "https://github.com/Darshan-git00",
-      "github": "https://github.com/Darshan-git00",
+      "github": "https://github.com/Darshan-git00/Cattle-Disease",
       "image": "/images/project-2.png"
     }
   ]

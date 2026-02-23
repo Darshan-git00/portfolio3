@@ -15,9 +15,7 @@ export default function Projects() {
           <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground">
             Projects
           </h2>
-          <span className="text-xs font-mono text-muted-foreground/50">
-            01 — 02
-          </span>
+          <span className="text-xs font-mono text-muted-foreground/50"></span>
         </div>
 
         <div className="space-y-32">
@@ -36,7 +34,7 @@ export default function Projects() {
                 0{index + 1}
               </div>
 
-              <div className="md:col-span-12 space-y-6 relative z-10">
+              <div className="md:col-span-12 space-y-6 relative z-10 justtify-content">
                 <div className="space-y-2">
                   <span className="text-xs font-mono text-muted-foreground">
                     {project.date}
@@ -47,7 +45,7 @@ export default function Projects() {
                 </div>
 
                 <p
-                  className="text-muted-foreground leading-relaxed"
+                  className="text-muted-foreground leading-relaxed text-justify text-sm"
                   data-testid={`text-project-desc-${index}`}
                 >
                   {project.description}
@@ -80,9 +78,7 @@ export default function Projects() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-medium hover:text-muted-foreground transition-colors"
                     data-testid={`link-project-demo-${index}`}
-                  >
-                    <ExternalLink className="h-5 w-5" /> Live
-                  </a>
+                  ></a>
                 </div>
               </div>
             </motion.div>
