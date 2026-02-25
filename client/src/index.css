@@ -15,7 +15,7 @@
 @theme inline {
   --font-sans: 'Satoshi', sans-serif;
   --font-heading: 'Clash Display', sans-serif;
-  --font-mono: 'Geist Mono', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

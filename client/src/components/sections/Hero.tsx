@@ -3,7 +3,7 @@ import resumeData from "@/data/resume.json";
 import { ArrowUpRight, FileText } from "lucide-react";
 
 const subtitle =
-  "Mixing football passion with badminton precision, I play hard, laugh louder, and keep the rally going on and off the field.";
+  "Started with Java, wandered into React, ended up enjoying both. I build things end-to-end and learn something new every sprint.";
 
 function WordReveal() {
   const words = subtitle.split(" ");
