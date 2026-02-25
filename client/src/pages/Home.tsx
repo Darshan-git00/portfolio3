@@ -5,7 +5,7 @@ import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
-import CustomCursor from "@/components/CustomCursor";
+import PremiumCursor from "@/components/PremiumCursor";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useState } from "react";
 import BasketballGame from "@/components/sections/BasketballGame";
@@ -21,15 +21,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background relative grain">
-      <CustomCursor />
+      <PremiumCursor />
       {/* Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-white z-[60] origin-left"
         style={{ scaleX }}
       />
-      
-      <Header onGameToggle={() => setShowGame(g => !g)} gameOpen={showGame} />
-      
+
+      <Header onGameToggle={() => setShowGame((g) => !g)} gameOpen={showGame} />
+
       {showGame ? (
         <BasketballGame />
       ) : (
@@ -41,7 +41,7 @@ export default function Home() {
           <Contact />
         </main>
       )}
-      
+
       {!showGame && <Footer />}
 
       {/* Background radial glow */}
