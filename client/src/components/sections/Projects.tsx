@@ -1,6 +1,77 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import resumeData from "@/data/resume.json";
 import { ExternalLink, Github } from "lucide-react";
+import { useRef } from "react";
+
+function ProjectCard({ project, index }: { project: any, index: number }) {
+  const cardRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"]
+  });
+
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -20]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [0, -80]);
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, delay: index * 0.1 }}
+      className="group grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative"
+      data-testid={`card-project-${index}`}
+    >
+      <div className="absolute -top-12 -left-8 text-[8rem] font-heading font-bold opacity-[0.03] select-none pointer-events-none">
+        0{index + 1}
+      </div>
+
+      <div className="md:col-span-12 space-y-6 relative z-10">
+        <motion.div style={{ y: y1 }} className="space-y-2">
+          <span className="text-xs font-mono text-muted-foreground">
+            {project.date}
+          </span>
+          <h3 className="text-3xl font-medium tracking-tight font-sans">
+            {project.title}
+          </h3>
+        </motion.div>
+
+        <motion.p
+          style={{ y: y2 }}
+          className="text-muted-foreground leading-relaxed text-justify text-sm"
+          data-testid={`text-project-desc-${index}`}
+        >
+          {project.description}
+        </motion.p>
+
+        <motion.div style={{ y: y3 }} className="flex flex-wrap gap-2 pt-2">
+          {project.technologies.map((tech) => (
+            <span
+              key={tech}
+              className="text-[10px] font-mono uppercase tracking-wider border border-white/10 px-2 py-1 rounded-full text-muted-foreground"
+            >
+              {tech}
+            </span>
+          ))}
+        </motion.div>
+
+        <div className="flex gap-6 pt-4">
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-medium hover:text-muted-foreground transition-colors"
+            data-testid={`link-project-github-${index}`}
+          >
+            <Github className="h-5 w-5" /> Source
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Projects() {
   return (
@@ -15,73 +86,11 @@ export default function Projects() {
           <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground">
             Projects
           </h2>
-          <span className="text-xs font-mono text-muted-foreground/50"></span>
         </div>
 
         <div className="space-y-32">
           {resumeData.projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="group grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative"
-              data-testid={`card-project-${index}`}
-            >
-              {/* Background Index Number */}
-              <div className="absolute -top-12 -left-8 text-[8rem] font-heading font-bold opacity-[0.03] select-none pointer-events-none">
-                0{index + 1}
-              </div>
-
-              <div className="md:col-span-12 space-y-6 relative z-10 justtify-content">
-                <div className="space-y-2">
-                  <span className="text-xs font-mono text-muted-foreground">
-                    {project.date}
-                  </span>
-                  <h3 className="text-3xl font-medium tracking-tight font-sans">
-                    {project.title}
-                  </h3>
-                </div>
-
-                <p
-                  className="text-muted-foreground leading-relaxed text-justify text-sm"
-                  data-testid={`text-project-desc-${index}`}
-                >
-                  {project.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {project.technologies.map((tech) => (
-                    <span
-                      key={tech}
-                      className="text-[10px] font-mono uppercase tracking-wider border border-white/10 px-2 py-1 rounded-full text-muted-foreground"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex gap-6 pt-4">
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium hover:text-muted-foreground transition-colors"
-                    data-testid={`link-project-github-${index}`}
-                  >
-                    <Github className="h-5 w-5" /> Source
-                  </a>
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium hover:text-muted-foreground transition-colors"
-                    data-testid={`link-project-demo-${index}`}
-                  ></a>
-                </div>
-              </div>
-            </motion.div>
+            <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
       </motion.div>

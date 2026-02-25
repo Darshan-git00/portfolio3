@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import resumeData from "@/data/resume.json";
-import { ArrowUpRight, FileText } from "lucide-react";
+import { ArrowUpRight, FileText, MapPin } from "lucide-react";
+import LiveClock from "@/components/LiveClock";
 
 const subtitle =
   "Started with Java, wandered into React, ended up enjoying both. I build things end-to-end and learn something new every sprint.";
@@ -28,34 +29,67 @@ function WordReveal() {
   );
 }
 
+function InteractiveName({ text }: { text: string }) {
+  return (
+    <span className="inline-flex">
+      {text.split("").map((char, i) => (
+        <motion.span
+          key={i}
+          whileHover={{ 
+            y: -10, 
+            rotate: Math.random() * 20 - 10,
+            color: "var(--foreground)",
+            transition: { duration: 0.2 }
+          }}
+          className="inline-block cursor-none"
+        >
+          {char === " " ? "\u00A0" : char}
+        </motion.span>
+      ))}
+    </span>
+  );
+}
+
 export default function Hero() {
   return (
     <section id="hero" className="relative">
       <div className="flex items-start justify-between gap-0">
-        {/* Left — Text content */}
         <div className="space-y-8 flex-1">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="inline-block font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
-              Hello! I'm
-            </span>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                Hello! I'm
+              </span>
+              <motion.span
+                animate={{ opacity: [1, 0] }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: "steps(2)" }}
+                className="w-[2px] h-4 bg-foreground/50"
+              />
+              <div className="flex items-center gap-2 ml-4 px-3 py-1 bg-muted/30 rounded-full border border-border">
+                <MapPin className="h-3 w-3 text-muted-foreground" />
+                <span className="text-[10px] font-mono text-muted-foreground">Bengaluru, IN</span>
+                <span className="text-muted-foreground/30">•</span>
+                <LiveClock />
+              </div>
+            </div>
+            
             <h1
               className="text-4xl md:text-7xl font-medium tracking-tight leading-[0.9] font-heading shimmer-text"
               data-testid="text-hero-title"
             >
-              <span style={{ fontFamily: "'Neue Montreal', syne" }}>
-                Darshan
-              </span>
-              <br />
-              <span
-                className="text-muted-foreground italic"
+              <div style={{ fontFamily: "'Neue Montreal', syne" }}>
+                <InteractiveName text="Darshan" />
+              </div>
+              <div
+                className="text-muted-foreground italic mt-2"
                 style={{ fontFamily: "'Neue Montreal', syne" }}
               >
-                Prabhakar.
-              </span>
+                <InteractiveName text="Prabhakar." />
+              </div>
             </h1>
           </motion.div>
 
@@ -97,7 +131,6 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Photo */}
         <img
           src="/images/darshan.png"
           alt="Darshan Prabhakar"
