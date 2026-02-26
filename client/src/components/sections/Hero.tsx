@@ -163,13 +163,12 @@ export default function Hero() {
               src="/images/darshan.png"
               alt="Darshan Prabhakar"
               animate={isHoveringPhoto ? {
-                filter: [
-                  "grayscale(100%)",
-                  "grayscale(0%) sepia(100%) hue-rotate(300deg) saturate(2)",
-                  "grayscale(0%) sepia(100%) hue-rotate(300deg) saturate(1.5)"
-                ],
+                filter: "grayscale(0%)",
                 x: [0, -2, 2, -1, 0],
-                transition: { duration: 0.4 }
+                transition: { 
+                  filter: { duration: 0.3 },
+                  x: { duration: 0.4, repeat: Infinity }
+                }
               } : {
                 filter: "grayscale(100%)",
                 x: 0
