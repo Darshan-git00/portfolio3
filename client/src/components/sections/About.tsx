@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
 import {
   motion,
   useScroll,
@@ -8,55 +8,52 @@ import {
 import resumeData from "@/data/resume.json";
 
 const skills = [
-  { name: "Java", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" },
-  { name: "SQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
-  { name: "JavaScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
-  { name: "HTML5", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
-  { name: "CSS3", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
+  {
+    name: "Java",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+  },
+  {
+    name: "SQL",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+  },
+  {
+    name: "JavaScript",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+  },
+  {
+    name: "HTML5",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+  },
+  {
+    name: "CSS3",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+  },
   { name: "Spring Boot", slug: "springboot" },
-  { name: "Spring MVC", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" },
-  { name: "Hibernate", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/hibernate/hibernate-plain.svg" },
-  { name: "REST APIs", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
-  { name: "React.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-  { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
-  { name: "AWS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" },
+  {
+    name: "Spring MVC",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg",
+  },
+  {
+    name: "Hibernate",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/hibernate/hibernate-plain.svg",
+  },
+  {
+    name: "REST APIs",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg",
+  },
+  {
+    name: "React.js",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+  },
+  {
+    name: "Docker",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+  },
+  {
+    name: "AWS",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+  },
 ];
-
-function TiltCard({ children }: { children: React.ReactNode }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const x = e.clientX - centerX;
-    const y = e.clientY - centerY;
-    setRotateX((-y / (rect.height / 2)) * 15);
-    setRotateY((x / (rect.width / 2)) * 15);
-  };
-
-  const handleMouseLeave = () => {
-    setRotateX(0);
-    setRotateY(0);
-  };
-
-  return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{ rotateX, rotateY }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      style={{ transformStyle: "preserve-3d" }}
-      className="relative"
-    >
-      {children}
-    </motion.div>
-  );
-}
 
 export default function About() {
   const containerRef = useRef(null);
@@ -71,6 +68,7 @@ export default function About() {
 
   return (
     <section id="about" className="scroll-m-24 space-y-24" ref={containerRef}>
+      {/* Bio Section */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -100,6 +98,7 @@ export default function About() {
         </div>
       </motion.div>
 
+      {/* Skills Grid */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -111,52 +110,52 @@ export default function About() {
           Technologies
         </h2>
 
-        <div className="relative flex flex-wrap justify-center gap-6 max-w-[600px] mx-auto p-8 bg-muted/5 rounded-3xl border border-border/50 overflow-hidden">
-          {/* Subtle noise texture */}
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-          
+        <div className="relative flex flex-wrap justify-center gap-6 max-w-[600px] mx-auto p-8 bg-muted/5 rounded-3xl border border-border/50">
           {skills.map((skill, i) => (
-            <TiltCard key={i}>
+            <motion.div
+              key={i}
+              className="relative"
+              onMouseEnter={() => setHoveredSkill(skill.name)}
+              onMouseLeave={() => setHoveredSkill(null)}
+            >
               <motion.div
-                className="relative"
-                onMouseEnter={() => setHoveredSkill(skill.name)}
-                onMouseLeave={() => setHoveredSkill(null)}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+                className="relative z-10 w-16 h-16 flex flex-col items-center justify-center gap-2 group cursor-none"
               >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="relative z-10 w-16 h-16 flex flex-col items-center justify-center gap-2 group cursor-none"
-                  style={{ transform: "translateZ(20px)" }}
-                >
-                  <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-background/50 backdrop-blur-sm group-hover:border-foreground/50 transition-all duration-300">
-                    <img
-                      src={skill.icon ?? `https://cdn.simpleicons.org/${skill.slug}`}
-                      alt={skill.name}
-                      className="w-6 h-6 grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-110"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                    />
-                    
-                    <AnimatePresence>
-                      {hoveredSkill === skill.name && (
-                        <motion.div
-                          layoutId="skill-glow"
-                          className="absolute inset-[-4px] rounded-xl bg-foreground/5 blur-md -z-10"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                        />
-                      )}
-                    </AnimatePresence>
-                  </div>
-                  
-                  <motion.span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-6 whitespace-nowrap">
-                    {skill.name}
-                  </motion.span>
-                </motion.div>
+                <div className="relative w-12 h-12 flex items-center justify-center rounded-xl border border-border bg-background/50 backdrop-blur-sm group-hover:border-foreground/50 transition-all duration-300">
+                  <img
+                    src={
+                      skill.icon ?? `https://cdn.simpleicons.org/${skill.slug}`
+                    }
+                    alt={skill.name}
+                    className="w-6 h-6 grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-110"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+
+                  {/* Skill Glow */}
+                  <AnimatePresence>
+                    {hoveredSkill === skill.name && (
+                      <motion.div
+                        layoutId="skill-glow"
+                        className="absolute inset-[-4px] rounded-xl bg-foreground/5 blur-md -z-10"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                      />
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <motion.span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -bottom-6 whitespace-nowrap">
+                  {skill.name}
+                </motion.span>
               </motion.div>
-            </TiltCard>
+            </motion.div>
           ))}
         </div>
       </motion.div>

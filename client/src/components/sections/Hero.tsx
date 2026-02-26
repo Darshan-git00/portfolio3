@@ -1,7 +1,8 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import resumeData from "@/data/resume.json";
 import { ArrowUpRight, FileText, MapPin } from "lucide-react";
 import LiveClock from "@/components/LiveClock";
+import { useState } from "react";
 
 const subtitle =
   "Started with Java, wandered into React, ended up enjoying both. I build things end-to-end and learn something new every sprint.";
@@ -51,6 +52,8 @@ function InteractiveName({ text }: { text: string }) {
 }
 
 export default function Hero() {
+  const [isHoveringPhoto, setIsHoveringPhoto] = useState(false);
+
   return (
     <section id="hero" className="relative">
       <div className="flex items-start justify-between gap-0">
@@ -70,10 +73,17 @@ export default function Hero() {
                 className="w-[2px] h-4 bg-foreground/50"
               />
               <div className="flex items-center gap-2 ml-4 px-3 py-1 bg-muted/30 rounded-full border border-border">
-                <MapPin className="h-3 w-3 text-muted-foreground" />
-                <span className="text-[10px] font-mono text-muted-foreground">Bengaluru, IN</span>
+                <MapPin className="h-3 w-3 text-[#fbbf24]" />
+                <span className="text-[10px] tracking-[0.1em] text-[#fbbf24]/80" style={{ fontFamily: "'Share Tech Mono', monospace" }}>BENGALURU, IN</span>
                 <span className="text-muted-foreground/30">•</span>
-                <LiveClock />
+                <div className="flex items-center gap-1 text-[#fbbf24]/80" style={{ fontFamily: "'Share Tech Mono', monospace" }}>
+                  <LiveClock />
+                  <motion.span 
+                    animate={{ opacity: [1, 0] }} 
+                    transition={{ duration: 0.8, repeat: Infinity }}
+                    className="w-1.5 h-1.5 rounded-full bg-[#fbbf24]"
+                  />
+                </div>
               </div>
             </div>
             
@@ -131,17 +141,43 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        <img
-          src="/images/darshan.png"
-          alt="Darshan Prabhakar"
-          className="w-60 h-75 object-cover object-top grayscale hover:grayscale-0 transition-all duration-500"
-          style={{
-            maskImage:
-              "radial-gradient(circle at center, black 30%, transparent 80%)",
-            WebkitMaskImage:
-              "radial-gradient(circle at center, black 30%, transparent 80%)",
-          }}
-        />
+        <div 
+          className="relative group"
+          onMouseEnter={() => setIsHoveringPhoto(true)}
+          onMouseLeave={() => setIsHoveringPhoto(false)}
+        >
+          <motion.div
+            animate={isHoveringPhoto ? {
+              boxShadow: "0 0 20px 2px rgba(251, 191, 36, 0.3)",
+              transition: { delay: 0.2 }
+            } : {
+              boxShadow: "0 0 0px 0px transparent"
+            }}
+            className="relative overflow-hidden"
+            style={{
+              maskImage: "radial-gradient(circle at center, black 30%, transparent 80%)",
+              WebkitMaskImage: "radial-gradient(circle at center, black 30%, transparent 80%)"
+            }}
+          >
+            <motion.img
+              src="/images/darshan.png"
+              alt="Darshan Prabhakar"
+              animate={isHoveringPhoto ? {
+                filter: [
+                  "grayscale(100%)",
+                  "grayscale(0%) sepia(100%) hue-rotate(300deg) saturate(2)",
+                  "grayscale(0%) sepia(100%) hue-rotate(300deg) saturate(1.5)"
+                ],
+                x: [0, -2, 2, -1, 0],
+                transition: { duration: 0.4 }
+              } : {
+                filter: "grayscale(100%)",
+                x: 0
+              }}
+              className="w-60 h-75 object-cover object-top"
+            />
+          </motion.div>
+        </div>
       </div>
     </section>
   );

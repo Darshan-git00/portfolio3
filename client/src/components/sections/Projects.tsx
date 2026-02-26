@@ -1,7 +1,42 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import resumeData from "@/data/resume.json";
 import { ExternalLink, Github } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+
+function TickerDate({ date }: { date: string }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const characters = date.split("");
+
+  return (
+    <div 
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="flex gap-[1px]"
+    >
+      {characters.map((char, i) => (
+        <div key={i} className="relative h-5 w-3 overflow-hidden bg-muted/50 rounded-sm">
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.span
+              key={isHovered ? "hovered" : "normal"}
+              initial={{ rotateX: 90, opacity: 0 }}
+              animate={{ rotateX: 0, opacity: 1 }}
+              exit={{ rotateX: -90, opacity: 0 }}
+              transition={{ 
+                duration: 0.4, 
+                delay: i * 0.05,
+                ease: "easeInOut"
+              }}
+              className="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-muted-foreground uppercase"
+              style={{ backfaceVisibility: "hidden" }}
+            >
+              {char}
+            </motion.span>
+          </AnimatePresence>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function ProjectCard({ project, index }: { project: any, index: number }) {
   const cardRef = useRef(null);
@@ -29,10 +64,8 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
       </div>
 
       <div className="md:col-span-12 space-y-6 relative z-10">
-        <motion.div style={{ y: y1 }} className="space-y-2">
-          <span className="text-xs font-mono text-muted-foreground">
-            {project.date}
-          </span>
+        <motion.div style={{ y: y1 }} className="space-y-4">
+          <TickerDate date={project.date} />
           <h3 className="text-3xl font-medium tracking-tight font-sans">
             {project.title}
           </h3>
