@@ -47,7 +47,7 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
 
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -50]);
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -20]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [0, -30]);
 
   return (
     <motion.div
@@ -56,14 +56,14 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay: index * 0.1 }}
-      className="group grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative"
+      className="group grid grid-cols-1 md:grid-cols-12 gap-8 items-start relative"
       data-testid={`card-project-${index}`}
     >
       <div className="absolute -top-12 -left-8 text-[8rem] font-heading font-bold opacity-[0.03] select-none pointer-events-none">
         0{index + 1}
       </div>
 
-      <div className="md:col-span-12 space-y-6 relative z-10">
+      <div className="md:col-span-12 space-y-8 relative z-10">
         <motion.div style={{ y: y1 }} className="space-y-4">
           <TickerDate date={project.date} />
           <h3 className="text-3xl font-medium tracking-tight font-sans">
@@ -73,21 +73,24 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
 
         <motion.p
           style={{ y: y2 }}
-          className="text-muted-foreground leading-relaxed text-justify text-sm"
+          className="text-muted-foreground leading-relaxed text-justify text-sm max-w-2xl"
           data-testid={`text-project-desc-${index}`}
         >
           {project.description}
         </motion.p>
 
-        <motion.div style={{ y: y3 }} className="flex flex-wrap gap-2 pt-2">
-          {project.technologies.map((tech) => (
-            <span
-              key={tech}
-              className="text-[10px] font-mono uppercase tracking-wider border border-white/10 px-2 py-1 rounded-full text-muted-foreground"
-            >
-              {tech}
-            </span>
-          ))}
+        <motion.div style={{ y: y3 }} className="space-y-4">
+          <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground/50">Tech Stack</p>
+          <div className="flex flex-wrap gap-2">
+            {project.technologies.map((tech) => (
+              <span
+                key={tech}
+                className="text-[10px] font-mono uppercase tracking-wider border border-white/10 px-3 py-1 rounded-full text-muted-foreground bg-muted/20"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
         </motion.div>
 
         <div className="flex gap-6 pt-4">
@@ -95,10 +98,11 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
             href={project.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-medium hover:text-muted-foreground transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium hover:text-muted-foreground transition-colors group/link"
             data-testid={`link-project-github-${index}`}
           >
-            <Github className="h-5 w-5" /> Source
+            <Github className="h-5 w-5 transition-transform group-hover/link:scale-110" /> 
+            <span className="border-b border-transparent group-hover/link:border-muted-foreground transition-all">Source</span>
           </a>
         </div>
       </div>
@@ -117,11 +121,11 @@ export default function Projects() {
       >
         <div className="flex items-baseline justify-between mb-12 border-b border-white/10 pb-4">
           <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground">
-            Projects
+            Selected Projects
           </h2>
         </div>
 
-        <div className="space-y-32">
+        <div className="space-y-40">
           {resumeData.projects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
