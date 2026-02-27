@@ -1,0 +1,17 @@
+Replace the entire content of Footer.tsx with the following design. Do not touch any other file. Keep all existing imports (resumeData, motion from framer-motion). Keep all existing font classes exactly as they are (font-heading, font-mono). Only change the JSX structure and Tailwind classes.
+Layout: Two rows inside a max-w-[780px] mx-auto px-6 container with py-16 padding.
+Top border: A single 1px line using the existing border-t border-border — no thick borders, no gradients on the border itself.
+Row 1 — Left side: Stack two things vertically with space-y-1:
+
+The text "Maybe this is the end of it." on one line and "byee" on the next, using font-heading class, text-3xl, font-bold, tracking-tight, leading-snug
+Below it: "I'm Tryna become a Developer · Bengaluru, India" in text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground/60
+
+Row 1 — Right side: The pulsing availability badge using motion.div with animate={{ opacity: [1, 0.4, 1] }} and transition={{ duration: 2.5, repeat: Infinity }}. Badge content: a 1.5px wide, 12px tall vertical line using bg-foreground/20, then the text "Open to work" in text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground. Wrap both in flex items-center gap-3. No border, no background on the badge — just the line and text, very minimal.
+Divider between rows: A full width h-[1px] div with class bg-gradient-to-r from-transparent via-border to-transparent my-10 — fades in from both sides, visible only in the center.
+Row 2: Three items in a flex justify-between items-center row:
+
+Left: © {year} {resumeData.personal.name} in text-[10px] font-mono text-muted-foreground/40
+Center: A decorative element — three dots · · · spaced with tracking-[0.5em] in text-muted-foreground/20 text-xs
+Right: "Designed with curiosity. Crafted with care." in text-[10px] font-mono italic text-muted-foreground/40
+
+Overall footer wrapper: <footer className="relative border-t border-border mt-24"> — no background changes, no textures, no watermarks, no absolute positioned decorative elements. Pure layout and typography only.
