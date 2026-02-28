@@ -5,10 +5,13 @@ import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
-import InkCursor from "@/components/InkCursor";
+import ThreadCursor from "@/components/ThreadCursor";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { useState } from "react";
+import BasketballGame from "@/components/sections/BasketballGame";
 
 export default function Home() {
+  const [showGame, setShowGame] = useState(false);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -18,7 +21,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background relative grain">
-      <InkCursor />
+      <ThreadCursor />
 
       {/* Header - always visible */}
       <Header />
