@@ -1,0 +1,11 @@
+Make the following 3 changes only. Do NOT touch any other existing code, components, styles, or logic anywhere in the project — not a single line beyond what is explicitly mentioned below.
+1. Location & Clock — Remove the card
+In whichever component renders "BENGALURU, IN • 19:04:36 IST", remove the card/box/border container wrapping it completely. Keep the text content and the clock functionality exactly as they are — just strip away any border, bg, rounded, shadow, px, py, or card-like wrapper classes. The text should sit bare on the page with no background or border around it, styled only with its existing font and color classes.
+2. Experience Date Badge — Remove the card
+In Experience.tsx, the date shown on each experience card like "Oct 2024 – Aug 2025" currently sits inside a styled badge/pill with a border and background. Remove the border, background, and rounded pill styling from that date element completely. Keep the text content, font class, and color exactly as they are — it should just read as plain bare text with no box or pill around it. Do not touch anything else in the Experience card.
+3. Profile Photo — 3D Presence + Selective Fade
+In Hero.tsx, on the profile photo <img> element:
+For the 3D effect — wrap the <img> in a motion.div and add a useMotionValue + useTransform based tilt effect so the photo rotates on X and Y axis (max ±12deg) following the mouse position over it, with a perspective: 800px on the wrapper. Add a very subtle drop shadow that shifts direction based on tilt angle to sell the depth. On mouse leave, spring-animate it back to flat. This should make the photo feel like a physical card or object floating in space.
+For the fade/mask — currently the mask is radial-gradient(circle at center, black 30%, transparent 80%) which fades all edges including the top where the head is. Change the maskImage and WebkitMaskImage to this exact value:
+linear-gradient(to top, transparent 0%, black 25%, black 75%, black 100%), radial-gradient(ellipse at center, black 40%, transparent 85%)
+Use CSS mask-composite: intersect and WebkitMaskComposite: source-in so the top of the head is fully visible and sharp, the bottom fades out naturally, and the sides fade softly. The goal is: head fully visible at top, gentle fade at bottom and sides only.

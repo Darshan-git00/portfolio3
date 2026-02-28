@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import resumeData from "@/data/resume.json";
 import { ArrowUpRight, FileText, MapPin } from "lucide-react";
 import LiveClock from "@/components/LiveClock";
@@ -53,6 +53,28 @@ function InteractiveName({ text }: { text: string }) {
 
 export default function Hero() {
   const [isHoveringPhoto, setIsHoveringPhoto] = useState(false);
+  
+  // 3D Tilt Logic
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const rotateX = useSpring(useTransform(y, [0, 300], [12, -12]), { stiffness: 300, damping: 30 });
+  const rotateY = useSpring(useTransform(x, [0, 240], [-12, 12]), { stiffness: 300, damping: 30 });
+  
+  const shadowX = useTransform(x, [0, 240], [15, -15]);
+  const shadowY = useTransform(y, [0, 300], [15, -15]);
+
+  function handleMouse(event: React.MouseEvent) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    x.set(event.clientX - rect.left);
+    y.set(event.clientY - rect.top);
+  }
+
+  function handleMouseLeave() {
+    setIsHoveringPhoto(false);
+    x.set(120);
+    y.set(150);
+  }
 
   return (
     <section id="hero" className="relative">
@@ -72,7 +94,7 @@ export default function Hero() {
                 transition={{ duration: 0.8, repeat: Infinity, ease: "steps(2)" }}
                 className="w-[2px] h-4 bg-foreground/50"
               />
-              <div className="flex items-center gap-2 ml-4 px-3 py-1 bg-muted/30 rounded-full border border-border">
+              <div className="flex items-center gap-2 ml-4">
                 <MapPin className="h-3 w-3 text-[#fbbf24]" />
                 <span className="text-[10px] tracking-[0.1em] text-[#fbbf24]/80" style={{ fontFamily: "'Share Tech Mono', monospace" }}>BENGALURU, IN</span>
                 <span className="text-muted-foreground/30">•</span>
@@ -142,11 +164,18 @@ export default function Hero() {
         </div>
 
         <div 
-          className="relative group"
+          className="relative group cursor-none"
+          onMouseMove={handleMouse}
           onMouseEnter={() => setIsHoveringPhoto(true)}
-          onMouseLeave={() => setIsHoveringPhoto(false)}
+          onMouseLeave={handleMouseLeave}
+          style={{ perspective: "800px" }}
         >
           <motion.div
+            style={{ 
+              rotateX, 
+              rotateY,
+              transformStyle: "preserve-3d"
+            }}
             animate={isHoveringPhoto ? {
               boxShadow: "0 0 20px 2px rgba(251, 191, 36, 0.3)",
               transition: { delay: 0.2 }
@@ -154,11 +183,13 @@ export default function Hero() {
               boxShadow: "0 0 0px 0px transparent"
             }}
             className="relative overflow-hidden"
-            style={{
-              maskImage: "radial-gradient(circle at center, black 30%, transparent 80%)",
-              WebkitMaskImage: "radial-gradient(circle at center, black 30%, transparent 80%)"
-            }}
           >
+            <motion.div
+              className="absolute inset-0 pointer-events-none z-[-1]"
+              style={{
+                boxShadow: useTransform([shadowX, shadowY], ([sx, sy]) => `${sx}px ${sy}px 30px rgba(0,0,0,0.5)`),
+              }}
+            />
             <motion.img
               src="/images/darshan.png"
               alt="Darshan Prabhakar"
@@ -174,6 +205,12 @@ export default function Hero() {
                 x: 0
               }}
               className="w-60 h-75 object-cover object-top"
+              style={{
+                maskImage: "linear-gradient(to top, transparent 0%, black 25%, black 75%, black 100%), radial-gradient(ellipse at center, black 40%, transparent 85%)",
+                WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 25%, black 75%, black 100%), radial-gradient(ellipse at center, black 40%, transparent 85%)",
+                maskComposite: "intersect",
+                WebkitMaskComposite: "source-in"
+              }}
             />
           </motion.div>
         </div>

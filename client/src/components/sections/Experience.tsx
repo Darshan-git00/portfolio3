@@ -56,20 +56,10 @@ export default function Experience() {
                     </div>
                   </div>
                   
-                  {/* Calendar Page Flip Animation */}
-                  <motion.div 
-                    whileHover={{ rotateX: -180 }}
-                    transition={{ duration: 0.6 }}
-                    style={{ transformStyle: "preserve-3d" }}
-                    className="shrink-0 relative h-8 w-32 cursor-pointer"
-                  >
-                    <div className="absolute inset-0 text-xs font-mono text-muted-foreground bg-muted px-3 py-1.5 rounded-full border border-border flex items-center justify-center backface-hidden">
-                      {exp.date}
-                    </div>
-                    <div className="absolute inset-0 text-xs font-mono text-background bg-foreground px-3 py-1.5 rounded-full border border-foreground flex items-center justify-center [transform:rotateX(180deg)] backface-hidden">
-                      Flipping...
-                    </div>
-                  </motion.div>
+                  {/* Bare text date instead of pill */}
+                  <div className="shrink-0 text-xs font-mono text-muted-foreground">
+                    {exp.date}
+                  </div>
                 </div>
 
                 <div className="h-[1px] bg-gradient-to-r from-border via-border/50 to-transparent" />
