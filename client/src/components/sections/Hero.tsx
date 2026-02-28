@@ -91,7 +91,7 @@ export default function Hero() {
               </span>
               <motion.span
                 animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.8, repeat: Infinity, ease: "steps(2)" }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
                 className="w-[2px] h-4 bg-foreground/50"
               />
               <div className="flex items-center gap-2 ml-4">
@@ -195,14 +195,9 @@ export default function Hero() {
               alt="Darshan Prabhakar"
               animate={isHoveringPhoto ? {
                 filter: "grayscale(0%)",
-                x: [0, -2, 2, -1, 0],
-                transition: { 
-                  filter: { duration: 0.3 },
-                  x: { duration: 0.4, repeat: Infinity }
-                }
+                transition: { duration: 0.3 }
               } : {
                 filter: "grayscale(100%)",
-                x: 0
               }}
               className="w-60 h-75 object-cover object-top"
               style={{

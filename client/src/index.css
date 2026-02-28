@@ -177,6 +177,12 @@ html {
   }
 }
 
+.shimmer-text {
+  color: var(--foreground);
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 .shimmer-text:hover {
   background: linear-gradient(90deg, var(--foreground) 25%, var(--muted-foreground) 50%, var(--foreground) 75%);
   background-size: 200% auto;

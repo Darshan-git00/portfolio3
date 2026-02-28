@@ -5,7 +5,7 @@ import Experience from "@/components/sections/Experience";
 import Projects from "@/components/sections/Projects";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
-import CustomCursor from "@/components/CustomCursor";
+import InkCursor from "@/components/InkCursor";
 import { motion, useScroll, useSpring } from "framer-motion";
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background relative grain">
-      <CustomCursor />
+      <InkCursor />
 
       {/* Header - always visible */}
       <Header />
