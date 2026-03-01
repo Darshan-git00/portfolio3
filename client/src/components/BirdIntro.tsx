@@ -6,21 +6,24 @@ export default function BirdIntro({ onComplete }: { onComplete: () => void }) {
   const [isFlying, setIsFlying] = useState(false);
 
   useEffect(() => {
-    // Sequence: wait 1500ms → start fly + dissolve → wait 900ms more → set isDone to true
-    const timer = setTimeout(() => setIsFlying(true), 1500);
-    const completeTimer = setTimeout(() => {
+    const t1 = setTimeout(() => {
+      setIsFlying(true);
+    }, 1500);
+    
+    const t2 = setTimeout(() => {
       setIsDone(true);
       onComplete();
-      // Wake up ThreadCursor
-      document.dispatchEvent(new MouseEvent('mousemove', { 
+      document.body.style.cursor = "";
+      document.dispatchEvent(new MouseEvent("mousemove", { 
         clientX: window.innerWidth / 2, 
         clientY: window.innerHeight / 2 
       }));
-    }, 2400);
-
+    }, 4000);
+    
     return () => {
-      clearTimeout(timer);
-      clearTimeout(completeTimer);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      document.body.style.cursor = "";
     };
   }, [onComplete]);
 
@@ -28,22 +31,13 @@ export default function BirdIntro({ onComplete }: { onComplete: () => void }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[99999] bg-background pointer-events-none overflow-hidden"
+      className="fixed inset-0 z-[99999] bg-background flex items-center justify-center overflow-hidden"
+      style={{ pointerEvents: isDone ? "none" : "all" }}
       initial={{ opacity: 1 }}
       animate={isFlying ? { opacity: 0 } : { opacity: 1 }}
-      transition={{ duration: 0.9, delay: 0.1 }}
+      transition={{ duration: 0.8, ease: "easeInOut" }}
     >
-      {/* Turbulence filter for the ripple reveal */}
-      <svg className="absolute inset-0 w-full h-full opacity-0 pointer-events-none">
-        <defs>
-          <filter id="ripple">
-            <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={isFlying ? 0 : 80} />
-          </filter>
-        </defs>
-      </svg>
-
-      <div className="relative w-full h-full" style={{ filter: isFlying ? "url(#ripple)" : "none" }}>
+      <div className="relative w-full h-full">
         <motion.div
           className="absolute bottom-12 left-12"
           initial={{ x: 0, y: 0, scale: 1 }}
@@ -51,12 +45,12 @@ export default function BirdIntro({ onComplete }: { onComplete: () => void }) {
             x: "100vw",
             y: "-100vh",
             transition: { 
-              x: { duration: 0.9, ease: [0.45, 0, 0.55, 1] },
-              y: { duration: 0.9, ease: [0.12, 0, 0.39, 0] }
+              duration: 2.0,
+              ease: "easeInOut"
             }
           } : {
             scale: [1, 1.03, 1],
-            transition: { duration: 1, repeat: Infinity }
+            transition: { duration: 1, repeat: Infinity, ease: "easeInOut" }
           }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" width="80" height="48" fill="none" stroke="var(--foreground)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -77,7 +71,7 @@ export default function BirdIntro({ onComplete }: { onComplete: () => void }) {
                   "M38 32 Q50 45 65 28"  // Wings down
                 ]
               } : { d: "M38 32 Q50 18 65 28" }}
-              transition={isFlying ? { duration: 0.15, repeat: Infinity, repeatType: "reverse" } : {}}
+              transition={isFlying ? { duration: 0.2, repeat: Infinity, repeatType: "reverse" } : {}}
             />
             {/* Eye */}
             <circle cx="75" cy="27" r="1.5" fill="var(--foreground)" />
