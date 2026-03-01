@@ -1,0 +1,35 @@
+Fix the BirdIntro component with the following changes. Do not touch any other file or component anywhere in the project.
+Fix 1 — Overlay never unmounts
+Make absolutely sure that after the full animation sequence completes, the overlay div is removed from the DOM entirely. Use a useState boolean like isDone — set it to true after the sequence ends and conditionally render the overlay only when isDone is false. If there is any while loop, infinite animation, or missing cleanup this must be removed.
+Fix 2 — z-index trapping
+The overlay is sitting at z-index: 99999 and never going away, blocking all interaction and cursor visibility beneath it. Once isDone is true the component must return null immediately — no lingering divs, no invisible overlays remaining in the DOM at any opacity level.
+Fix 3 — Cursor disappearing
+After the BirdIntro unmounts, dispatch a synthetic mousemove event on document to wake the ThreadCursor back up: document.dispatchEvent(new MouseEvent('mousemove', { clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 })).
+Fix 4 — Timing
+Use a simple setTimeout chain, nothing complex. Sequence: wait 1500ms → start fly + dissolve → wait 900ms more → set isDone to true and unmount. Total 2400ms then completely done, no exceptions.
+Fix 5 — Remove DARSHAN text
+Remove any text, name, or label that appears on the overlay completely. The intro should only be the bird sitting, flying, and the overlay dissolving to reveal the actual page beneath — no text of any kind on the overlay.
+Fix 6 — Replace the bird SVG
+The current bird built from basic circles and lines does not look good. Replace it entirely with this clean minimal bird silhouette SVG path — paste this exact inline SVG as the bird, no external image or file needed:
+svg<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60" width="80" height="48" fill="none" stroke="var(--foreground)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <!-- Body -->
+  <ellipse cx="50" cy="38" rx="18" ry="11" />
+  <!-- Head -->
+  <circle cx="72" cy="28" r="9" />
+  <!-- Beak -->
+  <path d="M80 26 L92 24 L80 30" fill="var(--foreground)" />
+  <!-- Tail -->
+  <path d="M32 38 Q18 30 12 42 Q20 36 32 44" />
+  <!-- Wing -->
+  <path d="M38 32 Q50 18 65 28" />
+  <!-- Eye -->
+  <circle cx="75" cy="27" r="1.5" fill="var(--foreground)" />
+  <!-- Legs -->
+  <line x1="52" y1="49" x2="48" y2="58" />
+  <line x1="48" y1="58" x2="44" y2="58" />
+  <line x1="48" y1="58" x2="50" y2="62" />
+  <line x1="60" y1="49" x2="56" y2="58" />
+  <line x1="56" y1="58" x2="52" y2="58" />
+  <line x1="56" y1="58" x2="58" y2="62" />
+</svg>
+Keep the sitting, breathing, flying, and wing flap animations exactly as they were — only the visual shape of the bird changes.

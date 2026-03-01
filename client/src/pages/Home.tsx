@@ -13,7 +13,6 @@ import BackToTop from "@/components/BackToTop";
 import LoadingSplash from "@/components/LoadingSplash";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import BasketballGame from "@/components/sections/BasketballGame";
 
 export default function Home() {
   const [showGame, setShowGame] = useState(false);
@@ -32,19 +31,24 @@ export default function Home() {
         {isLoading && <LoadingSplash onComplete={() => setIsLoading(false)} />}
       </AnimatePresence>
 
-      <div className={`min-h-screen bg-background relative grain transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+      <div
+        className={`min-h-screen bg-background relative grain transition-opacity duration-1000 ${isLoading ? "opacity-0" : "opacity-100"}`}
+      >
         <ThreadCursor />
         <SectionIndicator />
         <SectionCounter />
         <BackToTop />
-        
+
         {/* Progress Bar */}
         <motion.div
           className="fixed top-0 left-0 right-0 h-1 bg-white z-[60] origin-left"
           style={{ scaleX }}
         />
 
-        <Header onGameToggle={() => setShowGame((g) => !g)} gameOpen={showGame} />
+        <Header
+          onGameToggle={() => setShowGame((g) => !g)}
+          gameOpen={showGame}
+        />
 
         {showGame ? (
           <BasketballGame />
