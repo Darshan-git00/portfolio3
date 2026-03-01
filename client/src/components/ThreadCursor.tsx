@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
 
 export default function ThreadCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<SVGSVGElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const points = useRef<{ x: number; y: number }[]>(Array.from({ length: 20 }, () => ({ x: 0, y: 0 })));
   const mousePos = useRef({ x: 0, y: 0 });
+  const prevMousePos = useRef({ x: 0, y: 0 });
   const rafId = useRef<number>(0);
   const twangStartTime = useRef<number>(0);
 
@@ -13,16 +14,11 @@ export default function ThreadCursor() {
 
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
-      if (dotRef.current) {
-        dotRef.current.style.left = `${e.clientX}px`;
-        dotRef.current.style.top = `${e.clientY}px`;
-      }
-
+      
       const target = e.target as HTMLElement;
       const isHoverable = target.closest("a, button, [role='button']");
       if (dotRef.current) {
-        dotRef.current.style.width = isHoverable ? "11px" : "7px";
-        dotRef.current.style.height = isHoverable ? "11px" : "7px";
+        dotRef.current.style.scale = isHoverable ? "1.4" : "1";
       }
     };
 
@@ -34,14 +30,33 @@ export default function ThreadCursor() {
       const isDark = document.documentElement.classList.contains("dark");
       const color = isDark ? "hsl(0, 0%, 90%)" : "hsl(0, 0%, 10%)";
       
-      if (dotRef.current) dotRef.current.style.backgroundColor = color;
+      if (dotRef.current) {
+        dotRef.current.style.left = `${mousePos.current.x}px`;
+        dotRef.current.style.top = `${mousePos.current.y}px`;
+        dotRef.current.style.stroke = color;
+
+        // Rotation calculation
+        const dx = mousePos.current.x - prevMousePos.current.x;
+        const dy = mousePos.current.y - prevMousePos.current.y;
+        
+        // Only update angle if moving
+        if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+          const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90; // +90 because top point leads
+          dotRef.current.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+        } else {
+          dotRef.current.style.transform = `translate(-50%, -50%) rotate(0deg)`;
+        }
+      }
+      
       if (pathRef.current) pathRef.current.style.stroke = color;
 
-      // First point follows cursor
+      // Update previous pos
+      prevMousePos.current = { ...mousePos.current };
+
+      // Thread points physics
       points.current[0].x = mousePos.current.x;
       points.current[0].y = mousePos.current.y;
 
-      // Twang effect
       const twangElapsed = time - twangStartTime.current;
       const isTwanging = twangElapsed < 500;
       const twangFactor = isTwanging ? Math.sin(twangElapsed * 0.05) * Math.exp(-twangElapsed * 0.01) * 15 : 0;
@@ -50,11 +65,9 @@ export default function ThreadCursor() {
         const p = points.current[i];
         const prev = points.current[i - 1];
         
-        // Follow with delay
         p.x += (prev.x - p.x) * 0.15;
         p.y += (prev.y - p.y) * 0.15;
 
-        // Apply lateral twang
         if (isTwanging) {
           const lateralOffset = Math.sin(i * 0.5) * twangFactor;
           p.x += lateralOffset;
@@ -62,7 +75,6 @@ export default function ThreadCursor() {
         }
       }
 
-      // Update path
       if (pathRef.current) {
         const d = `M ${points.current[0].x} ${points.current[0].y} ` + 
                   points.current.slice(1).map(p => `L ${p.x} ${p.y}`).join(" ");
@@ -86,16 +98,21 @@ export default function ThreadCursor() {
 
   return (
     <>
-      <div
+      <svg
         ref={dotRef}
-        className="fixed pointer-events-none rounded-full transition-[width,height] duration-150 ease-out"
+        className="fixed pointer-events-none transition-[scale] duration-150 ease-out"
+        width="12"
+        height="18"
+        viewBox="0 0 12 18"
         style={{
-          width: "7px",
-          height: "7px",
           zIndex: 99999,
           transform: "translate(-50%, -50%)",
+          fill: "transparent",
+          strokeWidth: "1.2px",
         }}
-      />
+      >
+        <path d="M6 0 L12 10 L6 18 L0 10 Z" />
+      </svg>
       <svg
         className="fixed inset-0 w-full h-full pointer-events-none"
         style={{ zIndex: 99998 }}

@@ -1,0 +1,24 @@
+That's a genuinely creative and memorable idea. Here's the prompt:
+
+Create two new components — BirdIntro and SectionIndicator — each in their own new file. Add both imports and usages once into client/src/pages/Home.tsx only. Do not touch any other existing file or code anywhere in the project.
+Component 1 — BirdIntro
+This is a full-screen overlay that plays once on page load and never again.
+
+The overlay covers the entire viewport, fixed, inset-0, z-index: 99999, background matches the site background color using var(--background)
+In the bottom-left corner, render a small bird built entirely from SVG paths — no images, no external assets. The bird should look like a minimal side-profile perched bird: a round body, small beak pointing left, a tail, and two thin legs standing. Size around 60px to 70px. Stroke only, no fill, stroke color uses var(--foreground), stroke width 1.2px
+The bird sits still and breathes — a very subtle scale pulse 1.0 to 1.03 on a 1 second loop for the first 1.5 seconds
+After 1.5 seconds, the bird takes off — animate it flying to the upper right corner of the screen over 900ms. As it flies, the wings should flap — toggle between two SVG wing positions (wings up and wings down) every 150ms to simulate flapping. The flight path should follow a natural arc, not a straight line — use a cubic bezier curve motion path or animate both x and y with different easing so it curves upward naturally
+Exactly as the bird starts flying (at the 1.5 second mark), begin dissolving the overlay — but not with a simple fade. Use a clipPath or mask that starts as a fully covered screen and clears from the center outward in a ripple/wave pattern over 900ms, like disturbed water settling. Achieve this with an SVG feTurbulence + feDisplacementMap filter on the overlay that animates scale from 80 down to 0 over 900ms — this creates the scrambled water clearing effect as the page is revealed beneath
+Once the bird has flown off screen and the overlay is fully transparent, remove the component from the DOM entirely
+The whole sequence: bird sits 1.5s → bird flies + overlay dissolves simultaneously over 900ms → done. Total time: 2.4 seconds
+Do not use any external animation library beyond framer-motion which is already installed
+
+Component 2 — SectionIndicator
+
+Fixed to the left side of the viewport, vertically centered, z-index: 50, pointer-events: none
+A single thin vertical line 1px wide, 180px tall, color var(--foreground) at 15% opacity
+On this line, a small filled circle dot 5px diameter that travels up and down the line based on scroll progress through the page sections: Hero, About, Experience, Projects, Contact
+Next to each section's position on the line, show the section label in text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground/40 — formatted as 01 HERO, 02 ABOUT, 03 EXPERIENCE, 04 PROJECTS, 05 CONTACT. Labels sit to the right of the line with 8px gap
+The active section label brightens to text-muted-foreground/80 and the dot snaps to that section's position on the line with a smooth spring transition
+Detect active section using IntersectionObserver on each section's id
+Hide completely on mobile — hidden md:flex
