@@ -10,13 +10,9 @@ import SectionIndicator from "@/components/SectionIndicator";
 import BirdIntro from "@/components/BirdIntro";
 import SectionCounter from "@/components/SectionCounter";
 import BackToTop from "@/components/BackToTop";
-import LoadingSplash from "@/components/LoadingSplash";
-import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 export default function Home() {
-  const [showGame, setShowGame] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -26,14 +22,8 @@ export default function Home() {
 
   return (
     <>
-      <BirdIntro onComplete={() => {}} />
-      <AnimatePresence>
-        {isLoading && <LoadingSplash onComplete={() => setIsLoading(false)} />}
-      </AnimatePresence>
-
-      <div
-        className={`min-h-screen bg-background relative grain transition-opacity duration-1000 ${isLoading ? "opacity-0" : "opacity-100"}`}
-      >
+      <BirdIntro />
+      <div className="min-h-screen bg-background relative grain">
         <ThreadCursor />
         <SectionIndicator />
         <SectionCounter />
@@ -45,24 +35,17 @@ export default function Home() {
           style={{ scaleX }}
         />
 
-        <Header
-          onGameToggle={() => setShowGame((g) => !g)}
-          gameOpen={showGame}
-        />
+        <Header />
 
-        {showGame ? (
-          <BasketballGame />
-        ) : (
-          <main className="max-w-[780px] mx-auto px-6 py-24 space-y-40">
-            <Hero />
-            <About />
-            <Experience />
-            <Projects />
-            <Contact />
-          </main>
-        )}
+        <main className="max-w-[780px] mx-auto px-6 py-24 space-y-40">
+          <Hero />
+          <About />
+          <Experience />
+          <Projects />
+          <Contact />
+        </main>
 
-        {!showGame && <Footer />}
+        <Footer />
 
         {/* Background radial glow */}
         <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 pointer-events-none opacity-20 overflow-hidden">

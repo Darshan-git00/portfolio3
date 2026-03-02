@@ -1,0 +1,35 @@
+Here's the prompt to paste into Replit:
+
+Rewrite the BirdIntro.tsx component completely. Install lottie-react package first. Do not touch any other file in the project.
+Setup:
+Two Lottie JSON files are already uploaded in client/public/:
+
+bird-sit.json — plays while the bird is perched
+bird-fly.json — plays when the bird takes off
+
+Install lottie-react:
+bashnpm install lottie-react
+Import it in the component:
+tsximport Lottie from "lottie-react";
+import birdSit from "/bird-sit.json";
+import birdFly from "/bird-fly.json";
+Full sequence:
+
+Overlay covers the full screen using fixed inset-0 z-[99999] bg-background
+Bird starts in the bottom-left corner — absolute bottom-16 left-16
+bird-sit.json plays on loop for the first 3 seconds, bird size 180x180
+At 3 seconds, switch to bird-fly.json and simultaneously start animating the bird's position from bottom-left to x: 110vw, y: -110vh over 3.5 seconds using framer-motion, with ease: [0.16, 1, 0.3, 1] and scale going from 1 to 0.3 so it shrinks as it flies into the distance
+At the 3 second mark, also start fading the overlay opacity from 1 to 0 over 2 seconds with a 1 second delay so the bird is visible flying before the page reveals
+At 7 seconds total, set isDone to true, return null, dispatch a synthetic mousemove to wake the cursor: document.dispatchEvent(new MouseEvent("mousemove", { clientX: window.innerWidth / 2, clientY: window.innerHeight / 2 }))
+
+State:
+tsxconst [isDone, setIsDone] = useState(false);
+const [isFlying, setIsFlying] = useState(false);
+Use setTimeout for t1 at 3000ms to set isFlying(true) and t2 at 7000ms to set isDone(true). Clean up both timeouts on unmount. If isDone is true return null immediately.
+The Lottie component should switch based on isFlying:
+tsx<Lottie
+  animationData={isFlying ? birdFly : birdSit}
+  loop={true}
+  style={{ width: 180, height: 180 }}
+/>
+Wrap the Lottie in a motion.div for the flying position animation. Wrap the whole overlay in a motion.div for the opacity fade. pointerEvents on the overlay should be "none" once isFlying is true so the user can start interacting with the page beneath while the bird is still flying off.
