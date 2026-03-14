@@ -86,7 +86,7 @@ export default function Hero() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              <span className="font-Poppins text-xs uppercase tracking-[0.2em] text-muted-foreground">
                 Hello! I'm
               </span>
               <motion.span
@@ -96,7 +96,7 @@ export default function Hero() {
               />
               <div className="flex items-center gap-2 ml-4">
                 <MapPin className="h-3 w-3 text-[#fbbf24]" />
-                <span className="text-[10px] tracking-[0.1em] text-[#fbbf24]/80" style={{ fontFamily: "'Share Tech Mono', monospace" }}>BENGALURU, IN</span>
+                <span className="text-[10px] tracking-[0.1em] text-[#fbbf24]/80" style={{ fontFamily: "'Share Tech Mono', monospace" }}>BENGALURU, INDIA</span>
                 <span className="text-muted-foreground/30">•</span>
                 <div className="flex items-center gap-1 text-[#fbbf24]/80" style={{ fontFamily: "'Share Tech Mono', monospace" }}>
                   <LiveClock />
@@ -144,7 +144,7 @@ export default function Hero() {
               <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </motion.a>
             <motion.a
-              href="/resume.pdf"
+              href="DarshanResume1P.pdf"
               target="_blank"
               rel="noopener noreferrer"
               animate={{ y: [0, -4, 0] }}
@@ -157,7 +157,7 @@ export default function Hero() {
               className="group inline-flex items-center gap-2 text-lg font-medium hover:text-muted-foreground transition-colors"
               data-testid="link-view-resume"
             >
-              Read resume
+               resume
               <FileText className="h-5 w-5" />
             </motion.a>
           </motion.div>

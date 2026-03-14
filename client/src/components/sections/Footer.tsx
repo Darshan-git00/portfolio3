@@ -5,49 +5,48 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-border mt-24 bg-background">
-      <div className="max-w-[780px] mx-auto px-6 py-10">
-        {/* Row 1 */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
-          <div className="space-y-1">
-            <h2 className="font-heading text-3xl font-bold tracking-tight leading-snug text-foreground">
-              Maybe this is the end of it.<br />
-              byee
-            </h2>
-            <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground/60">
-              I'm Tryna become a Developer · Bengaluru, India
-            </p>
-          </div>
+    <footer className="border-t border-border mt-24 bg-background">
+      <div className="max-w-[780px] mx-auto px-6 py-12 text-center">
 
-          <motion.div 
-            animate={{ opacity: [1, 0.4, 1] }}
-            transition={{ duration: 2.5, repeat: Infinity }}
-            className="flex items-center gap-3"
+        {/* Eyebrow */}
+        <p className="text-[9px] font-mono uppercase tracking-[0.22em] text-muted-foreground/50 mb-4">
+          Bengaluru, India
+        </p>
+
+<motion.span
+            initial={{ opacity: 0, y: 4 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
+            className="text-[11px] font-mono italic text-muted-foreground/50 tracking-wide pb-1"
           >
-            <div className="w-[1.5px] h-3 bg-foreground/20" />
-            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-muted-foreground">
-              Open to work
-            </span>
-          </motion.div>
-        </div>
-
-        {/* Divider */}
-        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-border to-transparent my-6" />
-
-        {/* Row 2 */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[10px] font-mono text-muted-foreground/40">
-            © {year} {resumeData.personal.name}
-          </p>
+            
+          </motion.span>
+        {/* Name + byee */}
+        <div className="flex items-baseline justify-center gap-3 mb-3">
+          <h2 className="text-[40px] md:text-[52px] font-bold tracking-[-0.03em] leading-none text-foreground">
+            Darshan 
+          </h2>
           
-          <div className="text-muted-foreground/20 text-xs tracking-[0.5em] font-mono">
-            · · ·
-          </div>
-
-          <p className="text-[10px] font-mono italic text-muted-foreground/40">
-            Designed with curiosity. Crafted with care.
-          </p>
         </div>
+
+        {/* Tagline */}
+        <p className="text-[13px] text-muted-foreground/60 italic leading-relaxed max-w-sm mx-auto mb-10">
+          Life's too short to edit your brilliance <br />
+          write it bold, live it loud.
+        </p>
+
+        {/* Bottom bar */}
+        <div className="border-t border-border/50 pt-6 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-6">
+          <span className="text-[15px] font-mono text-muted-foreground/35">
+            © {year} {resumeData.personal.name}
+          </span>
+          <span className="hidden md:block text-muted-foreground/20 text-[10px]">·</span>
+          <span className="text-[20px] font-Poppins text-muted-foreground/35">
+            Designed with curiosity. Crafted with care.
+          </span>
+        </div>
+
       </div>
     </footer>
   );

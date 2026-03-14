@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/not-found";
+import HoloGlobe from "@/components/HoloGlobe";
 
 function Router() {
   return (
@@ -16,11 +17,13 @@ function Router() {
   );
 }
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="dark">
         <TooltipProvider>
+          {/* HoloGlobe must be inside ThemeProvider so the .dark class is present */}
+          <HoloGlobe />
           <Toaster />
           <Router />
         </TooltipProvider>
@@ -28,5 +31,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;
