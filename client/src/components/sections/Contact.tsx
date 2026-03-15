@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 import resumeData from "@/data/resume.json";
 import { Mail, Linkedin } from "lucide-react";
 
-// ─── Embedded HoloGlobe (scoped to contact section only) ─────────────────────
-
 interface Dot    { x: number; y: number; z: number; }
 interface Orbit  { tilt: number; yaw: number; r: number; }
 interface Ripple { x: number; y: number; t: number; }
@@ -28,8 +26,6 @@ function getColors(dark: boolean) {
       bgOuter:    "rgba(0,10,25,0.28)",
       haloInner:  "rgba(0,220,240,0.16)",
       haloOuter:  "rgba(0,180,220,0.06)",
-      edgeL:      "rgba(0,210,240,0.90)",
-      edgeMid:    "rgba(0,180,220,0.28)",
       dot:        (a: number) => `rgba(0,220,245,${a})`,
       grid:       "rgba(0,180,210,0.10)",
       orbitFront: 0.25,
@@ -42,8 +38,6 @@ function getColors(dark: boolean) {
     bgOuter:    "rgba(80,90,180,0.02)",
     haloInner:  "rgba(99,102,241,0.10)",
     haloOuter:  "rgba(99,102,241,0.03)",
-    edgeL:      "rgba(99,102,241,0.55)",
-    edgeMid:    "rgba(99,102,241,0.15)",
     dot:        (a: number) => `rgba(80,90,200,${a * 0.55})`,
     grid:       "rgba(99,102,241,0.07)",
     orbitFront: 0.18,
@@ -99,7 +93,7 @@ function ContactGlobe() {
       if (mx < 0 || my < 0 || mx > W || my > H) return;
       const cx = W / 2;
       const cy = H / 2;
-      const R  = Math.min(W, H) * 0.30;
+      const R  = Math.min(W, H) * 0.42;
       if (Math.hypot(mx - cx, my - cy) > R * 1.3) return;
       lastRipple.current = now;
       ripples.current.push({ x: mx, y: my, t: now });
@@ -114,7 +108,7 @@ function ContactGlobe() {
       if (mx < 0 || my < 0 || mx > W || my > H) return;
       const cx = W / 2;
       const cy = H / 2;
-      const R  = Math.min(W, H) * 0.30;
+      const R  = Math.min(W, H) * 0.42;
       if (Math.hypot(mx - cx, my - cy) > R * 1.3) return;
       ripples.current.push({ x: mx, y: my, t: performance.now() });
     };
@@ -137,7 +131,7 @@ function ContactGlobe() {
 
       const cx   = W / 2;
       const cy   = H / 2;
-      const R    = Math.min(W, H) * 0.30;
+      const R    = Math.min(W, H) * 0.42; // ← bigger globe
       const rotY = (ts * 0.0002) % (Math.PI * 2);
       const dark = document.documentElement.classList.contains("dark");
       const C    = getColors(dark);
@@ -162,13 +156,7 @@ function ContactGlobe() {
       ctx.beginPath(); ctx.arc(cx, cy, R * 1.25, 0, Math.PI * 2);
       ctx.fillStyle = halo; ctx.fill();
 
-      // Edge ring
-      ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
-      const edge = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
-      edge.addColorStop(0,   C.edgeL);
-      edge.addColorStop(0.5, C.edgeMid);
-      edge.addColorStop(1,   C.edgeL);
-      ctx.strokeStyle = edge; ctx.lineWidth = 1.5; ctx.stroke();
+      // ── No edge ring stroke — border removed ──
 
       // Sphere dots with ripple
       const projected = dots.map(d => {
@@ -292,11 +280,10 @@ export default function Contact() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="border-t border-b border-border"
       >
-        {/* ── Top: content row — no globe here ── */}
+        {/* ── Top: content row ── */}
         <div className="py-10 md:py-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
 
-            {/* Left — headline + availability */}
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-[7px] w-[7px]">
@@ -320,19 +307,20 @@ export default function Contact() {
               </p>
             </div>
 
-            {/* Right — CTA buttons */}
             <div className="flex items-center gap-3 shrink-0">
               <motion.a
-                href={`mailto:${resumeData.personal.email}`}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ duration: 0.15 }}
-                className="flex items-center gap-2 px-5 py-[10px] rounded-full bg-foreground text-background text-[12px] font-mono tracking-[0.04em] hover:opacity-90 transition-opacity duration-200"
-                aria-label="Send me an email"
-              >
-                <Mail className="w-[13px] h-[13px]" />
-                Send a mail
-              </motion.a>
+                  href="https://mail.google.com/mail/?view=cm&to=darshanprabhakar66@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: 0.15 }}
+                  className="flex items-center gap-2 px-5 py-[10px] rounded-full bg-foreground text-background text-[12px] font-mono tracking-[0.04em] hover:opacity-90 transition-opacity duration-200"
+                  aria-label="Send me an email"
+                >
+                  <Mail className="w-[13px] h-[13px]" />
+                  Send a mail
+                </motion.a>
 
               <motion.a
                 href={resumeData.personal.linkedin}
@@ -350,7 +338,6 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Response time row */}
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-border/50">
             <span className="text-[10px] font-mono text-muted-foreground/40 tracking-[0.06em]" />
             <span className="text-[10px] font-mono text-muted-foreground/40 italic">
@@ -359,8 +346,8 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* ── Bottom: globe fills the empty space below content ── */}
-        <div className="relative overflow-hidden rounded-xl" style={{ height: 320 }}>
+        {/* ── Bottom: globe ── */}
+        <div className="relative overflow-hidden rounded-xl" style={{ height: 360 }}>
           <ContactGlobe />
         </div>
 
