@@ -140,7 +140,7 @@ export default function About() {
         className="flex flex-col items-center gap-6"
       >
         <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-muted-foreground">
-          Technologies
+          Tech Stack
         </h2>
 
         {/* ── Infinite reel ── */}

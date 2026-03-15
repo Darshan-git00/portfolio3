@@ -23,7 +23,7 @@ export default function Home() {
   return (
     <>
       <BirdIntro />
-      <div className="min-h-screen bg-background relative grain">
+      <div className="min-h-screen  relative grain">
         <ThreadCursor />
         <SectionIndicator />
         <SectionCounter />

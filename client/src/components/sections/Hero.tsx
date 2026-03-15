@@ -39,7 +39,7 @@ function InteractiveName({ text }: { text: string }) {
           whileHover={{ 
             y: -10, 
             rotate: Math.random() * 20 - 10,
-            color: "var(--foreground)",
+           // color: "var(--foreground)",
             transition: { duration: 0.2 }
           }}
           className="inline-block cursor-none"
@@ -113,12 +113,12 @@ export default function Hero() {
               className="text-4xl md:text-7xl font-medium tracking-tight leading-[0.9] font-heading shimmer-text"
               data-testid="text-hero-title"
             >
-              <div style={{ fontFamily: "'Neue Montreal', syne" }}>
+              <div style={{ fontFamily: "'Poppins', syne" }}>
                 <InteractiveName text="Darshan" />
               </div>
               <div
                 className="text-muted-foreground italic mt-2"
-                style={{ fontFamily: "'Neue Montreal', syne" }}
+                style={{ fontFamily: "'Poppins', syne" }}
               >
                 <InteractiveName text="Prabhakar." />
               </div>

@@ -27,7 +27,7 @@ export default function SectionCounter() {
   return (
     <div className="fixed left-8 top-1/2 -translate-y-1/2 z-[60] hidden xl:flex flex-col items-center gap-4">
       <div className="text-[10px] font-mono text-muted-foreground rotate-90 mb-4 tracking-widest uppercase">
-        Scroll
+      
       </div>
       <div className="flex flex-col gap-8">
         {sections.map((_, i) => (

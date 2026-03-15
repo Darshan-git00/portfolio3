@@ -23,6 +23,9 @@ export default function Footer() {
             
           </motion.span>
         {/* Name + byee */}
+        <span className="text-[20px] font-Poppins text-muted-foreground/35">
+            Designed with curiosity. Crafted with care by.
+          </span>
         <div className="flex items-baseline justify-center gap-3 mb-3">
           <h2 className="text-[40px] md:text-[52px] font-bold tracking-[-0.03em] leading-none text-foreground">
             Darshan 
@@ -42,9 +45,7 @@ export default function Footer() {
             © {year} {resumeData.personal.name}
           </span>
           <span className="hidden md:block text-muted-foreground/20 text-[10px]">·</span>
-          <span className="text-[20px] font-Poppins text-muted-foreground/35">
-            Designed with curiosity. Crafted with care.
-          </span>
+          
         </div>
 
       </div>
