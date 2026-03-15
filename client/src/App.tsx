@@ -5,8 +5,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
 import Home from "@/pages/Home";
+import CinematicOverlay from "@/components/ui/CinematicOverlay";
 import NotFound from "@/pages/not-found";
 import HoloGlobe from "@/components/HoloGlobe";
+
 
 function Router() {
   return (
@@ -24,6 +26,7 @@ export default function App() {
         <TooltipProvider>
           {/* HoloGlobe must be inside ThemeProvider so the .dark class is present */}
           <HoloGlobe />
+          <CinematicOverlay />
           <Toaster />
           <Router />
         </TooltipProvider>

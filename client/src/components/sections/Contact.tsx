@@ -22,22 +22,22 @@ function generateSphereDots(count: number): Dot[] {
 function getColors(dark: boolean) {
   if (dark) {
     return {
-      bgInner:    "rgba(0,30,50,0.55)",
-      bgOuter:    "rgba(0,10,25,0.28)",
-      haloInner:  "rgba(0,220,240,0.16)",
-      haloOuter:  "rgba(0,180,220,0.06)",
-      dot:        (a: number) => `rgba(0,220,245,${a})`,
-      grid:       "rgba(0,180,210,0.10)",
-      orbitFront: 0.25,
+      bgInner:    "rgba(120,40,0,0.45)",
+      bgOuter:    "rgba(80,25,0,0.20)",
+      haloInner:  "rgba(249,115,22,0.18)",
+      haloOuter:  "rgba(249,115,22,0.06)",
+      dot:        (a: number) => `rgba(249,115,22,${a})`,
+      grid:       "rgba(249,115,22,0.12)",
+      orbitFront: 0.28,
       orbitBack:  0.08,
-      orbitRgb:   "0,200,220",
+      orbitRgb:   "249,115,22",
     };
   }
   return {
     bgInner:    "rgba(100,110,200,0.06)",
     bgOuter:    "rgba(80,90,180,0.02)",
     haloInner:  "rgba(99,102,241,0.10)",
-    haloOuter:  "rgba(99,102,241,0.03)",
+    haloOuter:  "rgba(5, 9, 248, 0.03)",
     dot:        (a: number) => `rgba(80,90,200,${a * 0.55})`,
     grid:       "rgba(99,102,241,0.07)",
     orbitFront: 0.18,
