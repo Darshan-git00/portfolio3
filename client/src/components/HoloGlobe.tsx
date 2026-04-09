@@ -2,29 +2,48 @@
 
 import { useEffect, useRef, useState } from "react";
 
-interface Point {
-  x: number; y: number; z: number;
-  baseX: number; baseY: number; baseZ: number;
-}
+// --- Configuration ---
+const CONFIG = {
+  grid: {
+    spacing: 60,
+    opacity: 0.1, // Fixed grid opacity
+  },
+  particles: {
+    count: 150,
+    baseSize: 1.8,
+    maxSize: 4.5, // Glimmer size
+    baseOpacity: 0.25,
+    maxOpacity: 0.8,
+    baseSpeed: 0.8,
+    mouseAttract: 0.08,
+  },
+  streams: {
+    curveVariance: 120, // How much streams weave
+    count: 6, // Major pathways
+    width: 2.5,
+    segmentLength: 400,
+  }
+};
 
-interface Satellite {
-  phi: number;
-  theta: number;
-  distance: number;
+interface Particle {
+  id: number;
+  t: number; // Normalized time along stream [0,1]
   speed: number;
-  id: string;
+  glimmer: boolean;
+  baseT: number; // Where it started
+  streamIndex: number; // Which Bézier path it follows
+  currentX: number;
+  currentY: number;
 }
 
-export default function CyberGlobe() {
+export default function AlgorithmicFlowBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [visible, setVisible] = useState(false);
-  const rotationRef = useRef({ x: 0.2, y: 0 }); // Slight tilt for better 3D feel
+  const rafRef = useRef<number>(0);
+  const timeRef = useRef<number>(0);
+  const mouseRef = useRef({ x: -9999, y: -9999 });
 
-  useEffect(() => {
-    const onToggle = () => setVisible((v) => !v);
-    window.addEventListener("particle-field-toggle", onToggle);
-    return () => window.removeEventListener("particle-field-toggle", onToggle);
-  }, []);
+  // Use state to make the canvas visible only when ready
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,138 +51,203 @@ export default function CyberGlobe() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const DOT_COUNT = 1000;
-    const GLOBE_RADIUS = 180;
-    let points: Point[] = [];
-    let satellites: Satellite[] = [
-      { phi: 1, theta: 0, distance: 240, speed: 0.01, id: "MTLB-S::2" },
-      { phi: -0.5, theta: 2, distance: 260, speed: -0.008, id: "IRDEN-19D" },
-      { phi: 0.2, theta: 4, distance: 220, speed: 0.015, id: "INT-019DPT" }
-    ];
+    let W = 0, H = 0;
+    let particles: Particle[] = [];
+    const bezierPaths: Array<[number, number][]> = [];
 
-    const initGlobe = () => {
-      points = [];
-      for (let i = 0; i < DOT_COUNT; i++) {
-        const phi = Math.acos(-1 + (2 * i) / DOT_COUNT);
-        const theta = Math.sqrt(DOT_COUNT * Math.PI) * phi;
-        points.push({
-          x: 0, y: 0, z: 0,
-          baseX: GLOBE_RADIUS * Math.cos(theta) * Math.sin(phi),
-          baseY: GLOBE_RADIUS * Math.sin(theta) * Math.sin(phi),
-          baseZ: GLOBE_RADIUS * Math.cos(phi)
-        });
-      }
-    };
-
-    const project = (x: number, y: number, z: number, W: number, H: number) => {
-      const rotX = rotationRef.current.x;
-      const rotY = rotationRef.current.y;
-
-      // Y-Axis Rotation
-      let x1 = x * Math.cos(rotY) - z * Math.sin(rotY);
-      let z1 = x * Math.sin(rotY) + z * Math.cos(rotY);
-      // X-Axis Rotation (Tilt)
-      let y2 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
-      let z2 = y * Math.sin(rotX) + z1 * Math.cos(rotX);
-
-      const perspective = 800 / (800 - z2);
-      return {
-        px: x1 * perspective + W / 2,
-        py: y2 * perspective + H / 2,
-        pz: z2,
-        scale: perspective
-      };
-    };
-
-    const draw = () => {
-      const W = canvas.width / devicePixelRatio;
-      const H = canvas.height / devicePixelRatio;
-      ctx.clearRect(0, 0, W, H);
-      if (!visible) { requestAnimationFrame(draw); return; }
-
-      rotationRef.current.y += 0.002;
-      const dark = document.documentElement.classList.contains("dark");
-      const cyan = dark ? "0, 210, 255" : "0, 80, 150";
-
-      // 1. Draw Globe Dots
-      points.forEach(p => {
-        const proj = project(p.baseX, p.baseY, p.baseZ, W, H);
-        if (proj.pz > -50) { // Simple back-face culling
-          const opacity = Math.max(0, (proj.pz + GLOBE_RADIUS) / (2 * GLOBE_RADIUS));
-          ctx.fillStyle = `rgba(${cyan}, ${opacity * 0.6})`;
-          ctx.fillRect(proj.px, proj.py, 1.5 * proj.scale, 1.5 * proj.scale);
-        }
-      });
-
-      // 2. Draw Satellites & Scanning Beams
-      satellites.forEach(s => {
-        s.theta += s.speed;
-        const sx = s.distance * Math.cos(s.theta) * Math.sin(s.phi);
-        const sy = s.distance * Math.sin(s.theta) * Math.sin(s.phi);
-        const sz = s.distance * Math.cos(s.phi);
-        const proj = project(sx, sy, sz, W, H);
-
-        if (proj.pz > -100) {
-          // Satellite Icon
-          ctx.strokeStyle = `rgba(${cyan}, 0.8)`;
-          ctx.lineWidth = 2;
-          ctx.strokeRect(proj.px - 3, proj.py - 3, 6, 6);
-          
-          // Label
-          ctx.font = "10px monospace";
-          ctx.fillStyle = `rgba(${cyan}, 0.8)`;
-          ctx.fillText(s.id, proj.px + 10, proj.py);
-
-          // Scanning Beam (Triangle)
-          const grad = ctx.createRadialGradient(proj.px, proj.py, 0, proj.px, proj.py, 150);
-          grad.addColorStop(0, `rgba(${cyan}, 0.2)`);
-          grad.addColorStop(1, "transparent");
-          
-          ctx.beginPath();
-          ctx.moveTo(proj.px, proj.py);
-          ctx.lineTo(W / 2 + (proj.px - W / 2) * 0.5, H / 2 + (proj.py - H / 2) * 0.5 + 40);
-          ctx.lineTo(W / 2 + (proj.px - W / 2) * 0.5, H / 2 + (proj.py - H / 2) * 0.5 - 40);
-          ctx.fillStyle = grad;
-          ctx.fill();
-        }
-      });
-
-      // 3. Draw UI Circles (The "HUD" rings)
-      ctx.strokeStyle = `rgba(${cyan}, 0.1)`;
-      ctx.setLineDash([5, 15]);
-      ctx.beginPath();
-      ctx.arc(W / 2, H / 2, GLOBE_RADIUS + 40, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      requestAnimationFrame(draw);
-    };
+    // --- Core Functions ---
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      initGlobe();
+      W = window.innerWidth;
+      H = window.innerHeight;
+      initPaths();
+      initParticles();
+      if (!isReady) setIsReady(true);
     };
 
-    window.addEventListener("resize", resize);
+    // Define unique Bézier curve paths for streams
+    const initPaths = () => {
+      bezierPaths.length = 0;
+      for (let i = 0; i < CONFIG.streams.count; i++) {
+        // Simple 3-point Bézier flow: Left to Right
+        const path: [number, number][] = [
+          [0, H / 2 + (Math.random() - 0.5) * H * 0.6], // Start (off-screen)
+          [W / 2 + (Math.random() - 0.5) * CONFIG.streams.curveVariance, H / 2], // Middle
+          [W, H / 2 + (Math.random() - 0.5) * H * 0.6], // End (off-screen)
+        ];
+        bezierPaths.push(path);
+      }
+    };
+
+    const getPointOnPath = (t: number, path: [number, number][]) => {
+      const u = 1 - t;
+      const t2 = t * t;
+      const u2 = u * u;
+      
+      const [p0, p1, p2] = path;
+      const x = u2 * p0[0] + 2 * u * t * p1[0] + t2 * p2[0];
+      const y = u2 * p0[1] + 2 * u * t * p1[1] + t2 * p2[1];
+      return { x, y };
+    };
+
+    const initParticles = () => {
+      particles = [];
+      for (let i = 0; i < CONFIG.particles.count; i++) {
+        const streamIdx = Math.floor(Math.random() * CONFIG.streams.count);
+        particles.push({
+          id: i,
+          baseT: Math.random(), // Random starting point on curve
+          t: Math.random(),
+          speed: (CONFIG.particles.baseSpeed + Math.random() * 0.4) / 1000,
+          glimmer: Math.random() < 0.2, // Small % glimmer
+          streamIndex: streamIdx,
+          currentX: 0,
+          currentY: 0,
+        });
+      }
+    };
+
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    };
+    const onMouseLeave = () => { mouseRef.current = { x: -9999, y: -9999 }; };
+
+    // --- Draw Loop ---
+    const draw = (t: number) => {
+      timeRef.current = t / 1000; // Time in seconds
+      ctx.clearRect(0, 0, W, H);
+      
+      const dark = document.documentElement.classList.contains("dark");
+      const baseColor = dark ? "255, 255, 255" : "30, 40, 60";
+      const streamColor = dark ? "80, 180, 255" : "90, 100, 241"; // Dynamic stream color
+
+      // 1. Draw Fixed Grid Blueprint
+      ctx.save();
+      ctx.strokeStyle = `rgba(${baseColor}, ${CONFIG.grid.opacity})`;
+      ctx.lineWidth = 0.5;
+      
+      const gridOffset = W * 0.05; // Make the grid feel less rigid
+      for (let x = -gridOffset; x < W + gridOffset; x += CONFIG.grid.spacing) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, H);
+        ctx.stroke();
+      }
+      for (let y = -gridOffset; y < H + gridOffset; y += CONFIG.grid.spacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 2. Draw Stream Pathways (Ghost lines)
+      ctx.save();
+      ctx.strokeStyle = `rgba(${streamColor}, 0.08)`;
+      ctx.lineWidth = CONFIG.streams.width;
+      ctx.lineCap = "round";
+      bezierPaths.forEach(path => {
+        ctx.beginPath();
+        for (let i = 0; i <= 100; i++) {
+          const pt = getPointOnPath(i / 100, path);
+          if (i === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
+        }
+        ctx.stroke();
+      });
+      ctx.restore();
+
+      // 3. Draw Particles
+      particles.forEach((p, i) => {
+        p.t = (p.baseT + timeRef.current * p.speed) % 1; // Normalize t and loop
+        const path = bezierPaths[p.streamIndex];
+        const pt = getPointOnPath(p.t, path);
+        p.currentX = pt.x;
+        p.currentY = pt.y;
+
+        // Mouse interaction: particles slightly attracted to mouse
+        const dx = mouseRef.current.x - p.currentX;
+        const dy = mouseRef.current.y - p.currentY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
+          p.currentX += dx * CONFIG.particles.mouseAttract * (1 - dist / 150);
+          p.currentY += dy * CONFIG.particles.mouseAttract * (1 - dist / 150);
+        }
+
+        // Draw the Particle
+        ctx.beginPath();
+        const baseSize = CONFIG.particles.baseSize;
+        const size = p.glimmer ? baseSize * (1 + 0.3 * Math.sin(timeRef.current * 4 + i)) : baseSize;
+        const opacity = p.glimmer ? CONFIG.particles.baseOpacity * (1 + 0.5 * Math.sin(timeRef.current * 4 + i)) : CONFIG.particles.baseOpacity;
+        
+        ctx.arc(p.currentX, p.currentY, size, 0, Math.PI * 2);
+        
+        // Active Glimmer Color
+        const color = p.glimmer ? `rgba(${streamColor}, ${opacity + 0.1})` : `rgba(${baseColor}, ${opacity})`;
+        ctx.fillStyle = color;
+        ctx.fill();
+
+        // 4. Subtle Inter-particle Connections (Active Glimmer only)
+        if (p.glimmer) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const other = particles[j];
+            if (!other.glimmer || other.streamIndex !== p.streamIndex) continue; // Only same stream connection
+            
+            const dx = other.currentX - p.currentX;
+            const dy = other.currentY - p.currentY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dist < 80) { // Max connection dist
+              ctx.beginPath();
+              ctx.moveTo(p.currentX, p.currentY);
+              ctx.lineTo(other.currentX, other.currentY);
+              ctx.strokeStyle = `rgba(${streamColor}, 0.04)`;
+              ctx.lineWidth = 0.3;
+              ctx.stroke();
+            }
+          }
+        }
+      });
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    // --- Init ---
     resize();
-    draw();
-    return () => window.removeEventListener("resize", resize);
-  }, [visible]);
+    window.addEventListener("resize", resize);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseleave", onMouseLeave);
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseleave", onMouseLeave);
+    };
+  }, [isReady]);
 
   return (
     <canvas
       ref={canvasRef}
       style={{
         position: "fixed",
-        top: 0, left: 0,
-        width: "100vw", height: "100vh",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
         pointerEvents: "none",
-        zIndex: 0,
-        background: "radial-gradient(circle at center, rgba(0,20,40,0.2) 0%, transparent 70%)"
+        zIndex: -1, // Ensure it's in the extreme background
+        opacity: isReady ? 1 : 0, // Fade-in when ready
+        transition: "opacity 0.6s ease",
+        background: "transparent", // Use container background or radial gradient
       }}
+      aria-hidden="true"
     />
   );
 }
