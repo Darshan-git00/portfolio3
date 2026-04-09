@@ -2,252 +2,237 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// --- Configuration ---
-const CONFIG = {
-  grid: {
-    spacing: 60,
-    opacity: 0.1, // Fixed grid opacity
-  },
-  particles: {
-    count: 150,
-    baseSize: 1.8,
-    maxSize: 4.5, // Glimmer size
-    baseOpacity: 0.25,
-    maxOpacity: 0.8,
-    baseSpeed: 0.8,
-    mouseAttract: 0.08,
-  },
-  streams: {
-    curveVariance: 120, // How much streams weave
-    count: 6, // Major pathways
-    width: 2.5,
-    segmentLength: 400,
-  }
-};
-
 interface Particle {
-  id: number;
-  t: number; // Normalized time along stream [0,1]
-  speed: number;
-  glimmer: boolean;
-  baseT: number; // Where it started
-  streamIndex: number; // Which Bézier path it follows
-  currentX: number;
-  currentY: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  baseX: number;
+  baseY: number;
+  size: number;
+  opacity: number;
+  speed: number;
 }
 
-export default function AlgorithmicFlowBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rafRef = useRef<number>(0);
-  const timeRef = useRef<number>(0);
-  const mouseRef = useRef({ x: -9999, y: -9999 });
+interface Ripple { x: number; y: number; t: number; }
 
-  // Use state to make the canvas visible only when ready
-  const [isReady, setIsReady] = useState(false);
+export default function ParticleField() {
+  const canvasRef  = useRef<HTMLCanvasElement>(null);
+  const rafRef     = useRef<number>(0);
+  const mouseRef   = useRef({ x: -9999, y: -9999 });
+  const ripples    = useRef<Ripple[]>([]);
+  const lastRipple = useRef<number>(0);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  // Visibility state — off by default, toggled by hero image click
+  const [visible, setVisible] = useState(false);
+  // Smooth opacity via ref so the draw loop can read it without re-renders
+  const alphaRef   = useRef(0);   // current rendered opacity 0–1
+  const targetRef  = useRef(0);   // target: 0 or 1
 
-    let W = 0, H = 0;
-    let particles: Particle[] = [];
-    const bezierPaths: Array<[number, number][]> = [];
+  // Keep targetRef in sync with visible state
+  useEffect(() => {
+    targetRef.current = visible ? 1 : 0;
+  }, [visible]);
 
-    // --- Core Functions ---
+  // Listen for the custom event fired by the hero image
+  useEffect(() => {
+    const onToggle = () => setVisible(v => !v);
+    window.addEventListener("particle-field-toggle", onToggle);
+    return () => window.removeEventListener("particle-field-toggle", onToggle);
+  }, []);
 
-    const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      W = window.innerWidth;
-      H = window.innerHeight;
-      initPaths();
-      initParticles();
-      if (!isReady) setIsReady(true);
-    };
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    // Define unique Bézier curve paths for streams
-    const initPaths = () => {
-      bezierPaths.length = 0;
-      for (let i = 0; i < CONFIG.streams.count; i++) {
-        // Simple 3-point Bézier flow: Left to Right
-        const path: [number, number][] = [
-          [0, H / 2 + (Math.random() - 0.5) * H * 0.6], // Start (off-screen)
-          [W / 2 + (Math.random() - 0.5) * CONFIG.streams.curveVariance, H / 2], // Middle
-          [W, H / 2 + (Math.random() - 0.5) * H * 0.6], // End (off-screen)
-        ];
-        bezierPaths.push(path);
-      }
-    };
+    const PARTICLE_COUNT = 120;
+    const MOUSE_RADIUS   = 140;
+    const MOUSE_STRENGTH = 0.018;
+    const RETURN_SPEED   = 0.008;
+    const DAMPING        = 0.96;
+    const DRIFT_SPEED    = 0.12;
+    const CONNECTION_DIST = 110;
+    const MAX_CONNECTIONS = 3;
 
-    const getPointOnPath = (t: number, path: [number, number][]) => {
-      const u = 1 - t;
-      const t2 = t * t;
-      const u2 = u * u;
-      
-      const [p0, p1, p2] = path;
-      const x = u2 * p0[0] + 2 * u * t * p1[0] + t2 * p2[0];
-      const y = u2 * p0[1] + 2 * u * t * p1[1] + t2 * p2[1];
-      return { x, y };
-    };
+    let particles: Particle[] = [];
 
-    const initParticles = () => {
-      particles = [];
-      for (let i = 0; i < CONFIG.particles.count; i++) {
-        const streamIdx = Math.floor(Math.random() * CONFIG.streams.count);
-        particles.push({
-          id: i,
-          baseT: Math.random(), // Random starting point on curve
-          t: Math.random(),
-          speed: (CONFIG.particles.baseSpeed + Math.random() * 0.4) / 1000,
-          glimmer: Math.random() < 0.2, // Small % glimmer
-          streamIndex: streamIdx,
-          currentX: 0,
-          currentY: 0,
-        });
-      }
-    };
+    const resize = () => {
+      const dpr     = window.devicePixelRatio || 1;
+      canvas.width  = canvas.offsetWidth  * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      initParticles();
+    };
 
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    };
-    const onMouseLeave = () => { mouseRef.current = { x: -9999, y: -9999 }; };
+    const initParticles = () => {
+      const W = canvas.offsetWidth;
+      const H = canvas.offsetHeight;
+      particles = Array.from({ length: PARTICLE_COUNT }, () => {
+        const bx = Math.random() * W;
+        const by = Math.random() * H;
+        return {
+          x: bx, y: by, baseX: bx, baseY: by,
+          vx:      (Math.random() - 0.5) * DRIFT_SPEED,
+          vy:      (Math.random() - 0.5) * DRIFT_SPEED,
+          size:    0.8 + Math.random() * 1.4,
+          opacity: 0.2 + Math.random() * 0.5,
+          speed:   0.6 + Math.random() * 0.8,
+        };
+      });
+    };
 
-    // --- Draw Loop ---
-    const draw = (t: number) => {
-      timeRef.current = t / 1000; // Time in seconds
-      ctx.clearRect(0, 0, W, H);
-      
-      const dark = document.documentElement.classList.contains("dark");
-      const baseColor = dark ? "255, 255, 255" : "30, 40, 60";
-      const streamColor = dark ? "80, 180, 255" : "90, 100, 241"; // Dynamic stream color
+    resize();
+    window.addEventListener("resize", resize);
 
-      // 1. Draw Fixed Grid Blueprint
-      ctx.save();
-      ctx.strokeStyle = `rgba(${baseColor}, ${CONFIG.grid.opacity})`;
-      ctx.lineWidth = 0.5;
-      
-      const gridOffset = W * 0.05; // Make the grid feel less rigid
-      for (let x = -gridOffset; x < W + gridOffset; x += CONFIG.grid.spacing) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, H);
-        ctx.stroke();
-      }
-      for (let y = -gridOffset; y < H + gridOffset; y += CONFIG.grid.spacing) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(W, y);
-        ctx.stroke();
-      }
-      ctx.restore();
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
 
-      // 2. Draw Stream Pathways (Ghost lines)
-      ctx.save();
-      ctx.strokeStyle = `rgba(${streamColor}, 0.08)`;
-      ctx.lineWidth = CONFIG.streams.width;
-      ctx.lineCap = "round";
-      bezierPaths.forEach(path => {
-        ctx.beginPath();
-        for (let i = 0; i <= 100; i++) {
-          const pt = getPointOnPath(i / 100, path);
-          if (i === 0) ctx.moveTo(pt.x, pt.y);
-          else ctx.lineTo(pt.x, pt.y);
-        }
-        ctx.stroke();
-      });
-      ctx.restore();
+      const now = performance.now();
+      if (now - lastRipple.current > 120) {
+        lastRipple.current = now;
+        ripples.current.push({ x: mouseRef.current.x, y: mouseRef.current.y, t: now });
+      }
+    };
+    const onMouseLeave = () => { mouseRef.current = { x: -9999, y: -9999 }; };
 
-      // 3. Draw Particles
-      particles.forEach((p, i) => {
-        p.t = (p.baseT + timeRef.current * p.speed) % 1; // Normalize t and loop
-        const path = bezierPaths[p.streamIndex];
-        const pt = getPointOnPath(p.t, path);
-        p.currentX = pt.x;
-        p.currentY = pt.y;
+    window.addEventListener("mousemove",  onMouseMove);
+    window.addEventListener("mouseleave", onMouseLeave);
 
-        // Mouse interaction: particles slightly attracted to mouse
-        const dx = mouseRef.current.x - p.currentX;
-        const dy = mouseRef.current.y - p.currentY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 150) {
-          p.currentX += dx * CONFIG.particles.mouseAttract * (1 - dist / 150);
-          p.currentY += dy * CONFIG.particles.mouseAttract * (1 - dist / 150);
-        }
+    const draw = () => {
+      const W    = canvas.offsetWidth;
+      const H    = canvas.offsetHeight;
+      const dark = document.documentElement.classList.contains("dark");
+      const mx   = mouseRef.current.x;
+      const my   = mouseRef.current.y;
+      const now  = performance.now();
 
-        // Draw the Particle
-        ctx.beginPath();
-        const baseSize = CONFIG.particles.baseSize;
-        const size = p.glimmer ? baseSize * (1 + 0.3 * Math.sin(timeRef.current * 4 + i)) : baseSize;
-        const opacity = p.glimmer ? CONFIG.particles.baseOpacity * (1 + 0.5 * Math.sin(timeRef.current * 4 + i)) : CONFIG.particles.baseOpacity;
-        
-        ctx.arc(p.currentX, p.currentY, size, 0, Math.PI * 2);
-        
-        // Active Glimmer Color
-        const color = p.glimmer ? `rgba(${streamColor}, ${opacity + 0.1})` : `rgba(${baseColor}, ${opacity})`;
-        ctx.fillStyle = color;
-        ctx.fill();
+      // Smoothly interpolate canvas opacity toward target
+      const target  = targetRef.current;
+      const current = alphaRef.current;
+      alphaRef.current = current + (target - current) * (target > current ? 0.05 : 0.03);
 
-        // 4. Subtle Inter-particle Connections (Active Glimmer only)
-        if (p.glimmer) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const other = particles[j];
-            if (!other.glimmer || other.streamIndex !== p.streamIndex) continue; // Only same stream connection
-            
-            const dx = other.currentX - p.currentX;
-            const dy = other.currentY - p.currentY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            
-            if (dist < 80) { // Max connection dist
-              ctx.beginPath();
-              ctx.moveTo(p.currentX, p.currentY);
-              ctx.lineTo(other.currentX, other.currentY);
-              ctx.strokeStyle = `rgba(${streamColor}, 0.04)`;
-              ctx.lineWidth = 0.3;
-              ctx.stroke();
-            }
-          }
-        }
-      });
+      // Skip drawing entirely when invisible
+      if (alphaRef.current < 0.005) {
+        ctx.clearRect(0, 0, W, H);
+        rafRef.current = requestAnimationFrame(draw);
+        return;
+      }
 
-      rafRef.current = requestAnimationFrame(draw);
-    };
+      // Expire old ripples
+      ripples.current = ripples.current.filter(r => now - r.t < 2000);
 
-    // --- Init ---
-    resize();
-    window.addEventListener("resize", resize);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseleave", onMouseLeave);
-    rafRef.current = requestAnimationFrame(draw);
+      const dotColor     = dark ? "255,255,255" : "80,80,120";
+      const lineColor    = dark ? "255,255,255" : "80,80,120";
+      const attractColor = dark ? "180,185,255" : "99,102,241";
 
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseleave", onMouseLeave);
-    };
-  }, [isReady]);
+      ctx.clearRect(0, 0, W, H);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        pointerEvents: "none",
-        zIndex: -1, // Ensure it's in the extreme background
-        opacity: isReady ? 1 : 0, // Fade-in when ready
-        transition: "opacity 0.6s ease",
-        background: "transparent", // Use container background or radial gradient
-      }}
-      aria-hidden="true"
-    />
-  );
+      // Apply overall fade via globalAlpha
+      ctx.globalAlpha = alphaRef.current;
+
+      particles.forEach((p, i) => {
+        const dx   = mx - p.x;
+        const dy   = my - p.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < MOUSE_RADIUS && dist > 0) {
+          const t     = 1 - dist / MOUSE_RADIUS;
+          const force = t * t * MOUSE_STRENGTH;
+          p.vx += dx * force;
+          p.vy += dy * force;
+        }
+
+        p.vx += (p.baseX - p.x) * RETURN_SPEED;
+        p.vy += (p.baseY - p.y) * RETURN_SPEED;
+        p.vx *= DAMPING;
+        p.vy *= DAMPING;
+        p.x  += p.vx;
+        p.y  += p.vy;
+
+        // Water ripple displacement
+        for (const rip of ripples.current) {
+          const age       = (now - rip.t) / 1000;
+          const waveFront = age * 90;
+          const dotDist   = Math.hypot(p.x - rip.x, p.y - rip.y);
+          const diff      = dotDist - waveFront;
+          if (Math.abs(diff) < 50) {
+            const norm   = diff / (50 * 0.5);
+            const wave   = Math.exp(-norm * norm);
+            const easeIn = Math.min(1, (now - rip.t) / 100);
+            const decay  = 1 - (age / 2) * (age / 2);
+            const dirX   = dotDist > 0 ? (p.x - rip.x) / dotDist : 0;
+            const dirY   = dotDist > 0 ? (p.y - rip.y) / dotDist : 0;
+            p.x += dirX * wave * 10 * decay * easeIn;
+            p.y += dirY * wave * 10 * decay * easeIn;
+          }
+        }
+
+        p.baseX += (Math.random() - 0.5) * 0.15 * p.speed;
+        p.baseY += (Math.random() - 0.5) * 0.15 * p.speed;
+        if (p.baseX < 0)  p.baseX = W;
+        if (p.baseX > W)  p.baseX = 0;
+        if (p.baseY < 0)  p.baseY = H;
+        if (p.baseY > H)  p.baseY = 0;
+
+        const near    = dist < MOUSE_RADIUS;
+        const glow    = near ? (1 - dist / MOUSE_RADIUS) : 0;
+        const alpha   = Math.min(p.opacity + glow * 0.35, 0.95);
+        const dotSize = p.size + glow * 0.9;
+        const color   = near ? attractColor : dotColor;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, dotSize, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${color},${alpha})`;
+        ctx.fill();
+
+        // Connection lines
+        let connections = 0;
+        for (let j = i + 1; j < particles.length && connections < MAX_CONNECTIONS; j++) {
+          const o  = particles[j];
+          const ld = Math.hypot(p.x - o.x, p.y - o.y);
+          if (ld < CONNECTION_DIST) {
+            connections++;
+            const la = (1 - ld / CONNECTION_DIST) * 0.15 * (dark ? 1 : 0.6);
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(o.x, o.y);
+            ctx.strokeStyle = `rgba(${lineColor},${la})`;
+            ctx.lineWidth   = 0.5;
+            ctx.stroke();
+          }
+        }
+      });
+
+      ctx.globalAlpha = 1; // reset
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize",     resize);
+      window.removeEventListener("mousemove",  onMouseMove);
+      window.removeEventListener("mouseleave", onMouseLeave);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position:      "fixed",
+        top:           0,
+        left:          0,
+        width:         "100vw",
+        height:        "100vh",
+        pointerEvents: "none",
+        zIndex:        0,
+      }}
+      aria-hidden="true"
+    />
+  );
 }
